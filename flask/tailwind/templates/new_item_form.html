@@ -1,0 +1,9 @@
+<!-- new_item_form.html -->
+
+<form action="/add-item" method="post" hx-post="/add-item" hx-target="#data-section" class="space-y-4">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter item name">
+
+    <button type="submit">Add</button>
+    <button type="button" hx-get="/data-table" hx-target="#data-section">Cancel</button>
+</form>
