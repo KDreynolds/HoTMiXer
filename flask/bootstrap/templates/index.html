@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to HoTMiX!</title>
-    <link rel="stylesheet" href="./static/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <header>
+    <header class="bg-dark text-white text-center p-3">
         <h1>Welcome to HoTMiX!</h1>
-        <nav>
-            <!-- <a href="#" hx-get="/content" hx-target="#main-content">Home</a> -->
-            <!-- Additional navigation links can be added here -->
-        </nav>
     </header>
-    <main id="main-content">
+    <main id="main-content" class="container py-4">
         <section class="welcome-section">
             <h2>Your project has been successfully created with HoTMiX!</h2>
             <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
@@ -48,10 +44,9 @@
 			<!-- Content loaded dynamically by HTMX -->
 		</div>
     </main>
-    <footer>
+    <footer class="bg-light text-center py-3">
         <p>Created with HoTMiX - Your HTMX scaffolding tool.</p>
     </footer>
     <script src="https://unpkg.com/htmx.org"></script>
-    <!-- <script src="script.js"></script> -->
 </body>
 </html>

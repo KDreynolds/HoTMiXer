@@ -1,6 +1,6 @@
 <!-- edit_item_form.html -->
 
-<form action="/edit-item/{{ item.id }}" method="post" hx-post="/edit-item/{{ item.id }}" hx-target="#data-section">
+<form action="/edit-item/{{ item.id }}" method="post" hx-post="/edit-item/{{ item.id }}" hx-target="#data-section" class="space-y-4">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" value="{{ item.name }}">
 
