@@ -1,0 +1,9 @@
+<!-- edit_item_form.ejs -->
+
+<form action="/edit-item/<%= item.id %>" method="post" hx-post="/edit-item/<%= item.id %>" hx-target="#data-section">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="<%= item.name %>">
+
+    <button type="submit">Update</button>
+    <button type="button" hx-get="/data-table" hx-target="#data-section">Cancel</button>
+</form>

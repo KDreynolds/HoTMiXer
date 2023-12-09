@@ -1,0 +1,21 @@
+<!-- data_table.html -->
+
+<table id="data-table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    {{range .Items}}
+    <tr>
+        <td>{{ .Id }}</td>
+        <td>{{ .Name }}</td>
+        <td>
+            <a href="/edit-item-form/{{ .Id }}" hx-get="/edit-item-form/{{ .Id }}" hx-target="#modal" hx-toggle="modal">Edit</a>
+            <form action="/delete-item/{{ .Id }}" method="post" hx-post="/delete-item/{{ .Id }}" hx-target="#data-section">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {{end}}
+</table>
