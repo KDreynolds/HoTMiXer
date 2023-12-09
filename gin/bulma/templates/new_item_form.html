@@ -1,9 +1,15 @@
-<!-- new_item_form.html -->
+<form action="/add-item" method="post" hx-post="/add-item" hx-target="#data-section" class="field">
+    <label for="name" class="label">Name:</label>
+    <div class="control">
+        <input type="text" id="name" name="name" placeholder="Enter item name" class="input">
+    </div>
 
-<form action="/add-item" method="post" hx-post="/add-item" hx-target="#data-section">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" placeholder="Enter item name">
-
-    <button type="submit">Add</button>
-    <button type="button" hx-get="/data-table" hx-target="#data-section">Cancel</button>
+    <div class="field is-grouped">
+        <div class="control">
+            <button type="submit" class="button is-link">Add</button>
+        </div>
+        <div class="control">
+            <button type="button" hx-get="/data-table" hx-target="#data-section" class="button is-link is-light">Cancel</button>
+        </div>
+    </div>
 </form>

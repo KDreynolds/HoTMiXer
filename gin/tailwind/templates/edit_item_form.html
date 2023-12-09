@@ -1,9 +1,9 @@
 <!-- edit_item_form.html -->
 
-<form action="/edit-item/{{ .Id }}" method="post" hx-post="/edit-item/{{ .Id }}" hx-target="#data-section">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" value="{{ .Name }}">
+<form action="/edit-item/{{ .Id }}" method="post" hx-post="/edit-item/{{ .Id }}" hx-target="#data-section" class="space-y-4">
+    <label for="name" class="block">Name:</label>
+    <input type="text" id="name" name="name" value="{{ .Name }}" class="block w-full">
 
-    <button type="submit">Update</button>
-    <button type="button" hx-get="/data-table" hx-target="#data-section">Cancel</button>
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white">Update</button>
+    <button type="button" hx-get="/data-table" hx-target="#data-section" class="px-4 py-2 bg-gray-500 text-white">Cancel</button>
 </form>

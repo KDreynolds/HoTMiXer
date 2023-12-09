@@ -1,16 +1,16 @@
 <!-- data_table.html -->
 
-<table id="data-table">
+<table id="data-table" class="w-full table-auto">
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Actions</th>
+        <th class="px-4 py-2">ID</th>
+        <th class="px-4 py-2">Name</th>
+        <th class="px-4 py-2">Actions</th>
     </tr>
     {{range .Items}}
     <tr>
-        <td>{{ .Id }}</td>
-        <td>{{ .Name }}</td>
-        <td>
+        <td class="border px-4 py-2">{{ .Id }}</td>
+        <td class="border px-4 py-2">{{ .Name }}</td>
+        <td class="border px-4 py-2">
             <a href="/edit-item-form/{{ .Id }}" hx-get="/edit-item-form/{{ .Id }}" hx-target="#modal" hx-toggle="modal">Edit</a>
             <form action="/delete-item/{{ .Id }}" method="post" hx-post="/delete-item/{{ .Id }}" hx-target="#data-section">
                 <button type="submit">Delete</button>
