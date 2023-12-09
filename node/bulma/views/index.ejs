@@ -4,25 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to HoTMiX!</title>
-    <link rel="stylesheet" href="./static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to HoTMiX!</h1>
-        <nav>
-            <!-- <a href="#" hx-get="/content" hx-target="#main-content">Home</a> -->
-            <!-- Additional navigation links can be added here -->
-        </nav>
+    <header class="hero is-dark">
+        <div class="hero-body">
+            <h1 class="title">Welcome to HoTMiX!</h1>
+        </div>
     </header>
-    <main id="main-content">
+    <main id="main-content" class="section">
         <section class="welcome-section">
-            <h2>Your project has been successfully created with HoTMiX!</h2>
+            <h2 class="title">Your project has been successfully created with HoTMiX!</h2>
             <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
-            <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link">Learn more about HTMX</a>
+            <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link button is-link">Learn more about HTMX</a>
         </section>
         <section id="data-section">
-            <h2>Data Table</h2>
-            <table id="data-table">
+            <h2 class="title">Data Table</h2>
+            <table id="data-table" class="table is-fullwidth">
                 <!-- Table Headers -->
                 <tr>
                     <th>ID</th>
@@ -40,7 +38,7 @@
                 </tr>
                 <% }); %>
             </table>
-            <button hx-get="/new_item_form" hx-target="#modal" hx-toggle="modal">Add New Item</button>
+            <button hx-get="/new_item_form" hx-target="#modal" hx-toggle="modal" class="button is-primary">Add New Item</button>
         </section>
         
         <!-- Modal for Adding/Editing Items -->
@@ -48,7 +46,7 @@
             <!-- Content loaded dynamically by HTMX -->
         </div>
     </main>
-    <footer>
+    <footer class="footer">
         <p>Created with HoTMiX - Your HTMX scaffolding tool.</p>
     </footer>
     <script src="https://unpkg.com/htmx.org"></script>
