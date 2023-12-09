@@ -5,7 +5,7 @@ HoTMiX is a command-line tool designed to simplify the process of starting new w
 ## Features
 
 - **Easy Scaffolding**: Quickly set up a new HTMX project with a simple command.
-- **Multiple Backends**: Supports various backend technologies including Flask, Gin, and Node.js.
+- **Multiple Backends**: Supports various backend technologies including Flask, Gin, and Node.js, with more to be added.
 - **HTMX Integration**: Leverage the power of HTMX for dynamic, efficient web applications.
 
 ## Getting Started
@@ -47,11 +47,13 @@ Replace `myproject` with your desired project name and `flask` with the backend 
 
 ## Contributing
 
-Please contact me KDReynolds, on twitter at @imyerf if you would like to contribute.
+Please contact me, KDReynolds, on twitter at @imyerf if you would like to contribute.
 
 ## License
 
-Mention the type of license this project is under.
+HoTMiX is open-sourced under the MIT License. This license permits you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, and to permit persons to whom the software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 ## Acknowledgments
 
