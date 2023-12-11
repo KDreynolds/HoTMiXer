@@ -1,25 +1,46 @@
 const fs = require('fs');
 const child_process = require('child_process');
 const program = require('commander');
-const inquirer = require('inquirer');
+const path = require('path');
+const fsExtra = require('fs-extra');
 
-program
-  .command('create <projectName>')
-  .option('-b, --backend <backend>', 'Backend framework')
-  .option('-f, --frontend <frontend>', 'Frontend framework')
-  .action((projectName, options) => {
-    if (options.backend && options.frontend) {
-      createNewProject(projectName, options.backend, options.frontend);
-    } else {
-      inquirer.prompt([
-        // Add your questions here
-      ]).then(answers => {
-        createNewProject(projectName, answers.backend, answers.frontend);
-      });
-    }
-  });
+let inquirer;
 
-program.parse(process.argv);
+import('inquirer').then((inq) => {
+  inquirer = inq;
+  main();
+});
+
+function main() {
+  program
+    .command('create <projectName>')
+    .option('-b, --backend <backend>', 'Backend framework')
+    .option('-s, --styling <styling>', 'Styling option')
+    .action((projectName, options) => {
+      if (options.backend && options.styling) {
+        createNewProject(projectName, options.backend, options.styling);
+      } else {
+        inquirer.default.prompt([
+          {
+            type: 'list',
+            name: 'backend',
+            message: 'Which backend would you like to use?',
+            choices: ['flask', 'gin', 'node'],
+          },
+          {
+            type: 'list',
+            name: 'styling',
+            message: 'Which styling would you like to use?',
+            choices: ['regular', 'tailwind', 'bulma', 'bootstrap'],
+          },
+        ]).then(answers => {
+          createNewProject(projectName, answers.backend, answers.styling);
+        });
+      }
+    });
+
+  program.parse(process.argv);
+}
 
 function createNewProject(projectName, backend, frontend) {
     createProjectDirectory(projectName);
@@ -30,21 +51,23 @@ function createNewProject(projectName, backend, frontend) {
 }
 
 function createProjectDirectory(projectName) {
-    try {
+  try {
+    if (!fs.existsSync(projectName)) {
       fs.mkdirSync(projectName);
       console.log(`Directory ${projectName} created successfully.`);
-    } catch (error) {
-      console.error(`Error creating directory: ${error}`);
+    } else {
+      console.log(`Directory ${projectName} already exists.`);
     }
+  } catch (error) {
+    console.error(`Error creating directory: ${error}`);
+  }
 }
 
 
 function copyTemplateFiles(projectName, backend, frontend) {
-    const templateDir = `${backend}/${frontend}`;
-    fs.readdirSync(templateDir).forEach(file => {
-      fs.copyFileSync(`${templateDir}/${file}`, `${projectName}/${file}`);
-    });
-    console.log('Template files copied successfully.');
+  const templateDir = path.join(__dirname, '..', backend, frontend);
+  fsExtra.copySync(templateDir, projectName);
+  console.log('Template files copied successfully.');
 }
 
 
