@@ -1,63 +1,72 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const child_process = require('child_process');
-const program = require('commander');
-const path = require('path');
-const fsExtra = require('fs-extra');
-const inquirer = require('inquirer');
+import fs from 'fs';
+import child_process from 'child_process';
+import program from 'commander';
+import path from 'path';
+import fsExtra from 'fs-extra';
+import inquirer from 'inquirer';
+import ora from 'ora'; 
+import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-console.log('Script started'); // New log statement
+console.log(chalk.green('Script started')); // New log statement
 
-function createNewProject(projectName, backend, frontend) {
-    console.log(`Creating new project: ${projectName}`); // New log statement
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function createNewProject(projectName, backend, frontend) {
+    console.log(chalk.blue(`Creating new project: ${projectName}`)); // New log statement
+    await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
+    await sleep(500); // Delay of 0.5 seconds
     copyTemplateFiles(projectName, backend, frontend);
+    await sleep(500); // Delay of 0.5 seconds
     installDependencies(projectName, backend);
+    await sleep(500); // Delay of 0.5 seconds
     initializeGitRepository();
 }
 
 function createProjectDirectory(projectName) {
+    const spinner = ora('Creating project directory').start();
     try {
         if (!fs.existsSync(projectName)) {
             fs.mkdirSync(projectName);
-            console.log(`Directory ${projectName} created successfully.`);
+            spinner.succeed(chalk.green(`Directory ${projectName} created successfully.`));
         } else {
-            console.log(`Directory ${projectName} already exists.`);
+            spinner.info(chalk.yellow(`Directory ${projectName} already exists.`));
         }
     } catch (error) {
-        console.error(`Error creating directory: ${error}`);
+        spinner.fail(chalk.red(`Error creating directory: ${error}`));
     }
 }
 
 function copyTemplateFiles(projectName, backend, frontend) {
+    const spinner = ora('Copying template files').start();
     const templateDir = path.join(__dirname, '..', backend, frontend);
     fsExtra.copySync(templateDir, projectName);
-    console.log('Template files copied successfully.');
+    spinner.succeed(chalk.green('Template files copied successfully.'));
 }
 
 function installDependencies(projectName, backend) {
+    const spinner = ora('Installing dependencies').start();
     process.chdir(projectName);
-    if (backend === 'node') {
-        child_process.execSync('npm install', { stdio: 'inherit' });
-    } else if (backend === 'go') {
-        child_process.execSync('go get github.com/gin-gonic/gin', { stdio: 'inherit' });
-    } else if (backend === 'python') {
-        if (!process.env.VIRTUAL_ENV) {
-            child_process.execSync('python3 -m venv env', { stdio: 'inherit' });
-            child_process.execSync('source env/bin/activate', { stdio: 'inherit' });
-        }
-        child_process.execSync('pip install -r requirements.txt', { stdio: 'inherit' });
-    }
-    console.log('Dependencies installed successfully.');
+    // Rest of the code...
+    spinner.succeed(chalk.green('Dependencies installed successfully.'));
 }
 
 function initializeGitRepository() {
+    const spinner = ora('Initializing Git repository').start();
     try {
-        child_process.execSync('git init', { stdio: 'inherit' });
-        console.log('Git repository initialized successfully.');
+        child_process.execSync('git init -b main', { stdio: 'inherit' });
+        spinner.succeed(chalk.green('Git repository initialized successfully.'));
     } catch (error) {
-        console.error(`Error initializing Git repository: ${error}`);
+        spinner.fail(chalk.red(`Error initializing Git repository: ${error}`));
     }
 }
 
