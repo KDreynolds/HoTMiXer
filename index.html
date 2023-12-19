@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to HoTMiX!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="#">
+				<img src="/static/logo-no-background.png" alt="HoTMiXer logo" height="40" width="211">
+			</a>
+			<ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#get-started">Get Started</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#docs">Docs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#help">Help</a>
+                </li>
+            </ul>
+		</div>
+	</nav>
+
+	<div class="text-center py-5">
+		<img src="/static/logo-no-background.png" alt="HoTMiXer logo" height="125" width="660">
+	</div>
+
+    <main id="main-content" class="container py-4">
+      <div class="row">
+        <section id="quick-scaffolding" class="col-md-4 my-5 bg-light p-4 rounded shadow">
+            <h2 class="text-dark-green">Quick Scaffolding</h2>
+            <p class="text-secondary">Get your project up and running with our quick setup tools. Our scaffolding system allows you to quickly set up the basic structure of your application, saving you time and effort. You can easily customize the scaffolding to suit your project's specific needs.</p>
+            <!-- Additional content goes here -->
+        </section>
+        
+        <section id="backend-options" class="col-md-4 my-5 bg-light p-4 rounded shadow">
+            <h2 class="text-dark-green">Backend Options</h2>
+            <p class="text-secondary">Choose from a variety of backend frameworks to suit your project needs. We support a wide range of popular frameworks, giving you the flexibility to choose the one that best fits your project. Whether you're building a simple website or a complex web application, we've got you covered.</p>
+            <!-- Additional content goes here -->
+        </section>
+        
+        <section id="htmx-integration" class="col-md-4 my-5 bg-light p-4 rounded shadow">
+            <h2 class="text-dark-green">HTMX Integration</h2>
+            <p class="text-secondary">Integrate HTMX for dynamic content without writing JavaScript. HTMX allows you to access modern browser features directly from HTML, without having to write any JavaScript. This makes it easier to build interactive web applications with less code.</p>
+            <!-- Additional content goes here -->
+        </section>
+	  </div>
+
+	  <div class="row justify-content-center">
+        <section id="get-started-quickly" class="col-md-8 my-5">
+            <h2 class="text-dark-green">Get Started Quickly</h2>
+            <p>To create a new project, run the following command:</p>
+            <pre><code>hotmixer create test</code></pre>
+            <p>This will create a new directory named "test" with a basic project structure. You can then navigate into the new directory and start your development server:</p>
+            <p>Follow along with the instructions to get your development server up and running</p>
+            <p>Happy Hacking!</p>
+        </section>
+	  </div>
+        
+        <!-- Additional sections for Docs, Getting Started, and API -->
+        <!-- ... -->
+
+        <!-- Modal for Adding/Editing Items -->
+        <div id="modal" class="modal">
+            <!-- Content loaded dynamically by HTMX -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <a href="/templates/docs.html" target="_blank" class="btn btn-outline-dark">Docs</a>
+                </div>
+                <div class="col">
+                    <p>Created with HoTMiX - Your HTMX scaffolding tool.</p>
+                </div>
+                <div class="col">
+                    <a href="https://www.npmjs.com/package/hotmixer" target="_blank" class="btn btn-outline-dark">NPM - HoTMiXer</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts for Bootstrap and HTMX -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script>
+        var i = 0;
+        var txt = `hotmixer create hotmix-site\n
+        Script started\n
+        Command received: create hotmix-site\n
+        ? Which backend would you like to use? flask\n
+        ? Which styling would you like to use? bootstrap\n
+        Creating new project: hotmix-site\n
+        ✔ Directory hotmix-site created successfully.\n
+        ✔ Template files copied successfully.\n
+        ✔ Dependencies installed successfully.\n
+        ⠋ Initializing Git repositoryInitialized empty Git repository in C:/Users/kyle.reynolds/Documents/Dev/hotmix-site/.git/\n
+        `;
+        var speed = 50;
+
+        function typeWriter() {
+         if (i < txt.length) {
+           if (txt.charAt(i) === '\n') {
+             document.getElementById("animated-terminal").innerHTML += '<br>';
+           } else {
+             document.getElementById("animated-terminal").innerHTML += txt.charAt(i);
+           }
+           i++;
+           setTimeout(typeWriter, speed);
+         } else {
+           setTimeout(resetText, 2000); // Wait for 2 seconds before starting to type again
+         }
+        }
+
+        function resetText() {
+          document.getElementById("animated-terminal").innerHTML = "";
+          i = 0;
+          typeWriter();
+        }
+
+        typeWriter();
+    </script>
+</body>
+</html>
