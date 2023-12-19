@@ -36,7 +36,7 @@ Still in the very early stages of development.
    - Ensure you are in the project directory where `requirements.txt` is located.
    - Install the required Python packages by running `pip install -r requirements.txt`.
 
-### Creating a New Project  (not working yet!)
+### Creating a New Project 
 
 To create a new HTMX project with a Flask backend, run the following command:
 
@@ -53,9 +53,13 @@ Please contact me, KDReynolds, on twitter at @imyerf if you would like to contri
 
 Right now there are two main areas that need attention
 
-1. Making sure every combination of HTMX/backend/styling actually works and looks good/consistent.
+1. Making sure every combination of HTMX/backend/styling actually works and looks good/consistent. - DONE, needs testing
 
-2. Bundling this all up into a "create-react-app" style script for NPM"
+2. Bundling this all up into a "create-react-app" style script for NPM" - DONE
+
+3. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
+
+4. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
 
 ## License
 
@@ -65,4 +69,4 @@ The above copyright notice and this permission notice shall be included in all c
 
 ## Acknowledgments
 
-Mr. Carson Gross for making me a Co-CEO
+Mr. Carson Gross for making me a Co-CEO of HTMX
