@@ -1,10 +1,11 @@
 {
-  "name": "hotmax",
-  "version": "0.0.4",
+  "name": "hotmixer",
+  "version": "0.0.3",
   "description": "",
   "main": "CLI/setup_script.js",
+  "type": "module",
   "bin": {
-    "hotmax": "./CLI/setup_script.js"
+    "hotmixer": "./CLI/setup_script.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,8 +14,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "commander": "^8.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^8.3.0",
     "fs-extra": "^10.0.0",
-    "inquirer": "^8.2.0"
+    "inquirer": "^8.2.0",
+    "ora": "^7.0.1"
   }
 }
