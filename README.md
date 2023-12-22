@@ -40,7 +40,11 @@ Still in the very early stages of development.
 
 To create a new HTMX project with a Flask backend, run the following command:
 
-hotmix create myproject --backend flask
+"hotmix create myproject --backend flask"
+
+OR
+
+run "hotmix create myproject" and select flask as your backend option
 
 Replace `myproject` with your desired project name and `flask` with the backend of your choice (flask/gin/nodejs).
 
