@@ -53,13 +53,17 @@ Please contact me, KDReynolds, on twitter at @imyerf if you would like to contri
 
 Right now there are two main areas that need attention
 
-1. Making sure every combination of HTMX/backend/styling actually works and looks good/consistent. - DONE, needs testing
+1. Add Django as a backend option.
 
-2. Bundling this all up into a "create-react-app" style script for NPM" - DONE
+2. explore other backend options to be added.
 
-3. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
+3. explore adding options for tech like Supabase or Pocketbase
 
-4. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
+4. Bundling this all up into a "create-react-app" style script for NPM" - DONE
+
+5. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
+
+6. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
 
 ## License
 
