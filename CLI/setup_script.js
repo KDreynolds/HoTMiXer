@@ -1,64 +1,113 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const child_process = require('child_process');
-const program = require('commander');
-const path = require('path');
-const fsExtra = require('fs-extra');
-const inquirer = require('inquirer');
+import fs from 'fs';
+import child_process from 'child_process';
+import program from 'commander';
+import path from 'path';
+import fsExtra from 'fs-extra';
+import inquirer from 'inquirer';
+import ora from 'ora'; 
+import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-console.log('Script started'); // New log statement
+console.log(chalk.green('Script started')); // New log statement
 
-function createNewProject(projectName, backend, frontend) {
-    console.log(`Creating new project: ${projectName}`); // New log statement
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function createNewProject(projectName, backend, frontend) {
+    console.log(chalk.blue(`Creating new project: ${projectName}`)); // New log statement
+    await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
+    await sleep(500); // Delay of 0.5 seconds
     copyTemplateFiles(projectName, backend, frontend);
+    await sleep(500); // Delay of 0.5 seconds
     installDependencies(projectName, backend);
+    await sleep(500); // Delay of 0.5 seconds
     initializeGitRepository();
+    await sleep(500); // Delay of 0.5 seconds
+    provideInstructions(backend); // Provide instructions based on the chosen backend
 }
 
 function createProjectDirectory(projectName) {
+    const spinner = ora('Creating project directory').start();
     try {
         if (!fs.existsSync(projectName)) {
             fs.mkdirSync(projectName);
-            console.log(`Directory ${projectName} created successfully.`);
+            spinner.succeed(chalk.green(`Directory ${projectName} created successfully.`));
         } else {
-            console.log(`Directory ${projectName} already exists.`);
+            spinner.info(chalk.yellow(`Directory ${projectName} already exists.`));
         }
     } catch (error) {
-        console.error(`Error creating directory: ${error}`);
+        spinner.fail(chalk.red(`Error creating directory: ${error}`));
     }
 }
 
 function copyTemplateFiles(projectName, backend, frontend) {
+    const spinner = ora('Copying template files').start();
     const templateDir = path.join(__dirname, '..', backend, frontend);
     fsExtra.copySync(templateDir, projectName);
-    console.log('Template files copied successfully.');
+    spinner.succeed(chalk.green('Template files copied successfully.'));
+
+    // If the backend is Flask, copy the requirements.txt file
+    if (backend === 'flask') {
+        const requirementsSource = path.join(__dirname, '..', 'flask', 'requirements.txt');
+        const requirementsDestination = path.join(projectName, 'requirements.txt');
+        fsExtra.copySync(requirementsSource, requirementsDestination);
+        spinner.succeed(chalk.green('requirements.txt copied successfully.'));
+    }
 }
 
 function installDependencies(projectName, backend) {
+    const spinner = ora('Installing dependencies').start();
     process.chdir(projectName);
-    if (backend === 'node') {
-        child_process.execSync('npm install', { stdio: 'inherit' });
-    } else if (backend === 'go') {
-        child_process.execSync('go get github.com/gin-gonic/gin', { stdio: 'inherit' });
-    } else if (backend === 'python') {
-        if (!process.env.VIRTUAL_ENV) {
-            child_process.execSync('python3 -m venv env', { stdio: 'inherit' });
-            child_process.execSync('source env/bin/activate', { stdio: 'inherit' });
-        }
-        child_process.execSync('pip install -r requirements.txt', { stdio: 'inherit' });
-    }
-    console.log('Dependencies installed successfully.');
+    // Rest of the code...
+    spinner.succeed(chalk.green('Dependencies installed successfully.'));
 }
 
 function initializeGitRepository() {
+    const spinner = ora('Initializing Git repository').start();
     try {
-        child_process.execSync('git init', { stdio: 'inherit' });
-        console.log('Git repository initialized successfully.');
+        child_process.execSync('git init -b main', { stdio: 'inherit' });
+        spinner.succeed(chalk.green('Git repository initialized successfully.'));
     } catch (error) {
-        console.error(`Error initializing Git repository: ${error}`);
+        spinner.fail(chalk.red(`Error initializing Git repository: ${error}`));
     }
+}
+
+function provideInstructions(backend) {
+    const spinner = ora('Providing instructions').start();
+    console.log(chalk.green(`\nProject setup complete! Here's how to get started:\n`));
+
+    switch (backend) {
+        case 'flask':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Create a Python virtual environment with 'python -m venv env'.
+3. Activate the virtual environment with 'source env/bin/activate' (on Unix or MacOS) or '.\\env\\Scripts\\activate' (on Windows).
+4. Run 'pip install -r requirements.txt' to install dependencies.
+5. Run 'flask run' to start the server.
+6. Visit the Flask documentation for more information: https://flask.palletsprojects.com/`));
+            break;
+        case 'gin':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'go run main.go' to start the server.
+3. Visit the Gin documentation for more information: https://gin-gonic.com/docs/`));
+            break;
+        case 'node':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'npm install' to install dependencies.
+3. Run 'npm start' to start the server.
+4. Visit the Express documentation for more information: https://expressjs.com/`));
+            break;
+        default:
+            console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
+    }
+    spinner.succeed(chalk.green('Instructions provided successfully.'));
 }
 
 program
