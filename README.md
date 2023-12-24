@@ -31,13 +31,12 @@ Setting Up a Python Environment
         Ensure you are in the project directory where requirements.txt is located.
         Install the required Python packages by running pip install -r requirements.txt.
 
+
 Creating a New Project
 
 To create a new HTMX project with a Flask backend, run the following command:
 
 "hotmixer create myproject --backend flask"
-
-OR
 
 run "hotmixer create myproject" and select flask as your backend option
 
@@ -57,6 +56,7 @@ Right now there are two main areas that need attention
 
     We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
 
+
     Hot-reloading would be really nice but need to think through how this would work with all the different backends.
 
 License
@@ -67,3 +67,4 @@ The above copyright notice and this permission notice shall be included in all c
 Acknowledgments
 
 Mr. Carson Gross for making me a Co-CEO of HTMX
+
