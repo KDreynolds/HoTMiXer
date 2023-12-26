@@ -49,16 +49,15 @@ Areas needing work
 
 Right now there are two main areas that need attention
 
-    Add Django as a backend option.
+    1. Add Django as a backend option.
 
-    explore other backend options to be added.
+    2. explore other backend options to be added.
 
-    explore adding options for tech like Supabase or Pocketbase
+    3. explore adding options for tech like Supabase or Pocketbase
 
-    We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
+    4. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
 
-
-    Hot-reloading would be really nice but need to think through how this would work with all the different backends.
+    5. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
 
 # License
 
