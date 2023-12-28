@@ -1,7 +1,8 @@
 # HoTMiXer
 
 HoTMiXer is a command-line tool designed to simplify the process of starting new web projects. It allows developers to quickly scaffold projects using the HTMX framework, coupled with a choice of popular backend technologies like Flask, Gin, and Node.js.
-Features
+
+# Features
 
     Easy Scaffolding: Quickly set up a new HTMX project with a simple command.
     Multiple Backends: Supports various backend technologies including Flask, Gin, and Node.js, with more to be added.
