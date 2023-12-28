@@ -21,7 +21,16 @@ function sleep(ms) {
 }
 
 async function createNewProject(projectName, backend, frontend) {
-    console.log(chalk.blue(`Creating new project: ${projectName}`)); // New log statement
+    if (backend === 'django') {
+        installDjango();
+        startDjangoProject(projectName);
+        await sleep(500);
+        copyTemplateFilesDjango(projectName);
+        await sleep(500);
+        initializeGitRepository();
+        await sleep(500);
+        provideInstructions(backend);
+    } else {
     await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
     await sleep(500); // Delay of 0.5 seconds
@@ -32,7 +41,42 @@ async function createNewProject(projectName, backend, frontend) {
     initializeGitRepository();
     await sleep(500); // Delay of 0.5 seconds
     provideInstructions(backend); // Provide instructions based on the chosen backend
+    }
 }
+
+function installDjango() {
+    const spinner = ora('Installing Django').start();
+    try {
+        child_process.execSync('pip install django', { stdio: 'inherit' });
+        spinner.succeed(chalk.green('Django installed successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error installing Django: ${error}`));
+    }
+}
+
+function startDjangoProject(projectName) {
+    const spinner = ora('Starting Django project').start();
+    try {
+        if (['test', 'other disallowed names...'].includes(projectName.toLowerCase())) {
+            throw new Error(`'${projectName}' conflicts with the name of an existing Python module and cannot be used as a project name. Please try another name.`);
+        }
+        child_process.execSync(`django-admin startproject ${projectName}`, { stdio: 'inherit' });
+        process.chdir(projectName);
+        spinner.succeed(chalk.green('Django project started successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error starting Django project: ${error}`));
+    }
+}
+
+function copyTemplateFilesDjango(projectName) {
+    const spinner = ora('Copying template files').start();
+    const templateDir = path.join(__dirname, '..', 'django');
+    const projectDir = path.join(process.cwd(), projectName, 'static');
+    fsExtra.copySync(templateDir, projectDir);
+    spinner.succeed(chalk.green('Template files copied successfully.'));
+}
+
+
 
 function createProjectDirectory(projectName) {
     const spinner = ora('Creating project directory').start();
@@ -98,6 +142,11 @@ function provideInstructions(backend) {
 2. Run 'go run main.go' to start the server.
 3. Visit the Gin documentation for more information: https://gin-gonic.com/docs/`));
             break;
+        case 'django':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'python manage.py runserver' to start the server.
+3. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
+            break;
         case 'node':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'npm install' to install dependencies.
@@ -124,7 +173,7 @@ program
                     type: 'list',
                     name: 'backend',
                     message: 'Which backend would you like to use?',
-                    choices: ['flask', 'gin', 'node'],
+                    choices: ['flask', 'gin', 'node', 'django'],
                 },
                 {
                     type: 'list',
