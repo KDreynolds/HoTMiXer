@@ -58,7 +58,19 @@ function installDjango() {
         child_process.execSync('pip install django', { stdio: 'inherit' });
         spinner.succeed(chalk.green('Django installed successfully.'));
     } catch (error) {
-        spinner.fail(chalk.red(`Error installing Django: ${error}`));
+        spinner.info(chalk.yellow(`Error installing Django with pip: ${error}. Trying with pip3...`));
+        try {
+            child_process.execSync('pip3 install django', { stdio: 'inherit' });
+            spinner.succeed(chalk.green('Django installed successfully with pip3.'));
+        } catch (error) {
+            spinner.info(chalk.yellow(`Error installing Django with pip3: ${error}. Trying with pacman...`));
+            try {
+                child_process.execSync('sudo pacman -S python-django', { stdio: 'inherit' });
+                spinner.succeed(chalk.green('Django installed successfully with pacman.'));
+            } catch (error) {
+                spinner.fail(chalk.red(`Error installing Django with pacman: ${error}`));
+            }
+        }
     }
 }
 
@@ -70,6 +82,7 @@ function startDjangoProject(projectName) {
         }
         child_process.execSync(`django-admin startproject ${projectName}`, { stdio: 'inherit' });
         process.chdir(projectName);
+        console.log(`Current working directory: ${process.cwd()}`);
         spinner.succeed(chalk.green('Django project started successfully.'));
     } catch (error) {
         spinner.fail(chalk.red(`Error starting Django project: ${error}`));
@@ -151,9 +164,8 @@ function createIndexTemplate(projectName) {
 function createIndexView(projectName) {
     const spinner = ora('Creating index view').start();
     try {
-        const appDir = path.join(projectName, projectName);
-        const viewsPath = path.join(appDir, 'views.py');
-        const urlsPath = path.join(appDir, 'urls.py');
+        const viewsPath = path.join(process.cwd(), projectName, 'views.py');
+        const urlsPath = path.join(process.cwd(), projectName, 'urls.py');
 
         // Create views.py
         const viewsCode = `
@@ -184,11 +196,11 @@ urlpatterns = [
 function configureDjangoSettings(projectName) {
     const spinner = ora('Configuring Django settings').start();
     try {
-        const settingsPath = path.join(projectName, projectName, 'settings.py');
+        const settingsPath = path.join(process.cwd(), projectName, 'settings.py');
         let settings = fs.readFileSync(settingsPath, 'utf8');
 
         // Add templates directory to TEMPLATES setting
-        settings = settings.replace("'DIRS': [],", "'DIRS': [BASE_DIR / 'templates'],");
+        settings = settings.replace("'DIRS': [],", `'DIRS': [BASE_DIR / '${projectName}' / 'templates'],`);
 
         fs.writeFileSync(settingsPath, settings);
         spinner.succeed(chalk.green('Django settings configured successfully.'));
@@ -280,8 +292,9 @@ function provideInstructions(backend) {
             break;
         case 'django':
             console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'python manage.py runserver' to start the server.
-3. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
+2. Run 'python manage.py migrate' to migrate settings.
+3. Run 'python manage.py runserver' to start the server.
+4. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
             break;
         case 'node':
             console.log(chalk.blue(`1. Navigate to your project directory.
