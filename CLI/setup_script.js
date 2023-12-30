@@ -25,7 +25,15 @@ async function createNewProject(projectName, backend, frontend) {
         installDjango();
         startDjangoProject(projectName);
         await sleep(500);
-        copyTemplateFilesDjango(projectName);
+        configureDjangoSettings(projectName);
+        await sleep(500);
+        createTemplatesDirectory(projectName);
+        await sleep(500);
+        createIndexTemplate(projectName);
+        await sleep(500);
+        createIndexView(projectName);
+        await sleep(500);
+        installDependencies(projectName, backend);
         await sleep(500);
         initializeGitRepository();
         await sleep(500);
@@ -68,12 +76,125 @@ function startDjangoProject(projectName) {
     }
 }
 
-function copyTemplateFilesDjango(projectName) {
-    const spinner = ora('Copying template files').start();
-    const templateDir = path.join(__dirname, '..', 'django');
-    const projectDir = path.join(process.cwd(), projectName, 'static');
-    fsExtra.copySync(templateDir, projectDir);
-    spinner.succeed(chalk.green('Template files copied successfully.'));
+function createIndexTemplate(projectName) {
+    const spinner = ora('Creating index template').start();
+    try {
+        const templatesDir = path.join(process.cwd(), projectName, 'templates');
+        const indexPath = path.join(templatesDir, 'index.html');
+
+        // Create index.html
+        const indexCode = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Welcome to HoTMiX!</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+        </head>
+        <body>
+            <header class="hero is-dark">
+                <div class="hero-body">
+                    <h1 class="title">Welcome to HoTMiX!</h1>
+                </div>
+            </header>
+            <main id="main-content" class="section">
+                <section class="welcome-section">
+                    <h2 class="title">Your project has been successfully created with HoTMiX!</h2>
+                    <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
+                    <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link button is-link">Learn more about HTMX</a>
+                </section>
+                <section id="data-section" class="section">
+                    <h2 class="title">Data Table</h2>
+                    <table id="data-table" class="table is-fullwidth">
+                        <!-- Table Headers -->
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                        <!-- Data Rows Fetched from Backend -->
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>
+                                <!-- Action buttons -->
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <button hx-get="/new_item_form" hx-target="#modal" hx-toggle="modal" class="button is-primary">Add New Item</button>
+                </section>
+                
+                <!-- Modal for Adding/Editing Items -->
+                <div id="modal" class="modal">
+                    <!-- Content loaded dynamically by HTMX -->
+                </div>
+            </main>
+            <footer class="footer">
+                <p>Created with HoTMiX - Your HTMX scaffolding tool.</p>
+            </footer>
+            <script src="https://unpkg.com/htmx.org"></script>
+            <!-- <script src="script.js"></script> -->
+        </body>
+        </html>
+`;
+        fs.writeFileSync(indexPath, indexCode);
+
+        spinner.succeed(chalk.green('Index template created successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error creating index template: ${error}`));
+    }
+}
+
+function createIndexView(projectName) {
+    const spinner = ora('Creating index view').start();
+    try {
+        const appDir = path.join(projectName, projectName);
+        const viewsPath = path.join(appDir, 'views.py');
+        const urlsPath = path.join(appDir, 'urls.py');
+
+        // Create views.py
+        const viewsCode = `
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'index.html')
+`;
+        fs.writeFileSync(viewsPath, viewsCode);
+
+        // Create urls.py
+        const urlsCode = `
+from django.urls import path
+from .views import index
+
+urlpatterns = [
+    path('', index, name='index'),
+]
+`;
+        fs.writeFileSync(urlsPath, urlsCode);
+
+        spinner.succeed(chalk.green('Index view created successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error creating index view: ${error}`));
+    }
+}
+
+function configureDjangoSettings(projectName) {
+    const spinner = ora('Configuring Django settings').start();
+    try {
+        const settingsPath = path.join(projectName, projectName, 'settings.py');
+        let settings = fs.readFileSync(settingsPath, 'utf8');
+
+        // Add templates directory to TEMPLATES setting
+        settings = settings.replace("'DIRS': [],", "'DIRS': [BASE_DIR / 'templates'],");
+
+        fs.writeFileSync(settingsPath, settings);
+        spinner.succeed(chalk.green('Django settings configured successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error configuring Django settings: ${error}`));
+    }
 }
 
 
@@ -89,6 +210,21 @@ function createProjectDirectory(projectName) {
         }
     } catch (error) {
         spinner.fail(chalk.red(`Error creating directory: ${error}`));
+    }
+}
+
+function createTemplatesDirectory(projectName) {
+    const spinner = ora('Creating templates directory').start();
+    try {
+        const templatesDir = path.join(process.cwd(), projectName, 'templates');
+        if (!fs.existsSync(templatesDir)) {
+            fs.mkdirSync(templatesDir);
+            spinner.succeed(chalk.green(`Templates directory created successfully.`));
+        } else {
+            spinner.info(chalk.yellow(`Templates directory already exists.`));
+        }
+    } catch (error) {
+        spinner.fail(chalk.red(`Error creating templates directory: ${error}`));
     }
 }
 
