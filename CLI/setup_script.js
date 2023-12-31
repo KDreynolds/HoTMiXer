@@ -36,6 +36,8 @@ async function createNewProject(projectName, backend, frontend) {
         await sleep(500);
         copyStylingFiles(projectName, frontend);
         await sleep(500);
+        modifyIndexTemplate(projectName, frontend);
+        await sleep(500);
         installDependencies(projectName, backend);
         await sleep(500);
         initializeGitRepository();
@@ -289,6 +291,85 @@ function copyStylingFiles(projectName, styling) {
         spinner.succeed(chalk.green('Styling files copied successfully.'));
     } catch (error) {
         spinner.fail(chalk.red(`Error copying styling files: ${error}`));
+    }
+}
+
+function modifyIndexTemplate(projectName, styling) {
+    const spinner = ora('Modifying index template').start();
+    try {
+        const templatesDir = path.join(process.cwd(), projectName, 'templates');
+        const indexPath = path.join(templatesDir, 'index.html');
+        
+        // Read the existing index.html file
+        let indexCode = fs.readFileSync(indexPath, 'utf8');
+        
+        // Modify the indexCode based on the styling choice
+        switch (styling) {
+            case 'bulma':
+                // Add Bulma-specific classes to the HTML elements
+                indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="hero is-primary">');
+                indexCode = indexCode.replace('<h1 class="title">', '<h1 class="title is-1">');
+                
+                // Add additional sections and elements
+                const welcomeSection = `
+                <section class="welcome-section">
+                    <h2 class="title">Your project has been successfully created with HoTMiX!</h2>
+                    <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
+                    <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link button is-link">Learn more about HTMX</a>
+                </section>
+                `;
+                indexCode = indexCode.replace('<main id="main-content">', `<main id="main-content" class="section">${welcomeSection}`);
+                
+                // Modify existing sections and elements
+                indexCode = indexCode.replace('<table>', '<table class="table is-fullwidth">');
+                break;
+            case 'regular':
+                // Modify indexCode for 'regular' styling
+                break;
+                case 'tailwind':
+                    // Add Tailwind-specific classes to the HTML elements
+                    indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="bg-gray-800 text-white text-center py-3">');
+                    indexCode = indexCode.replace('<h1 class="title">', '<h1 class="text-2xl">');
+                    
+                    // Add additional sections and elements
+                    const welcomeSectionTailwind = `
+                    <section class="welcome-section">
+                        <h2>Your project has been successfully created with HoTMiX!</h2>
+                        <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
+                        <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link">Learn more about HTMX</a>
+                    </section>
+                    `;
+                    indexCode = indexCode.replace('<main id="main-content">', `<main id="main-content" class="flex-grow py-4">${welcomeSectionTailwind}`);
+                    
+                    // Modify existing sections and elements
+                    indexCode = indexCode.replace('<footer>', '<footer class="bg-gray-200 text-center py-3">');
+                    break;
+                case 'bootstrap':
+                    // Add Bootstrap-specific classes to the HTML elements
+                    indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="bg-primary text-white text-center py-3">');
+                    indexCode = indexCode.replace('<h1 class="title">', '<h1 class="display-4">');
+                    
+                    // Add additional sections and elements
+                    const welcomeSectionBootstrap = `
+                    <section class="welcome-section">
+                        <h2 class="display-5">Your project has been successfully created with HoTMiX!</h2>
+                        <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
+                        <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link btn btn-primary">Learn more about HTMX</a>
+                    </section>
+                    `;
+                    indexCode = indexCode.replace('<main id="main-content">', `<main id="main-content" class="container my-5">${welcomeSectionBootstrap}`);
+                    
+                    // Modify existing sections and elements
+                    indexCode = indexCode.replace('<table>', '<table class="table">');
+                    break;
+        }
+
+        // Write the modified indexCode back to index.html
+        fs.writeFileSync(indexPath, indexCode);
+        
+        spinner.succeed(chalk.green('Index template modified successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error modifying index template: ${error}`));
     }
 }
 
