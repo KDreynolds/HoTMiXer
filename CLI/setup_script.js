@@ -11,6 +11,7 @@ import chalk from 'chalk';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+
 console.log(chalk.green('Script started')); // New log statement
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,9 +30,11 @@ async function createNewProject(projectName, backend, frontend) {
         await sleep(500);
         createTemplatesDirectory(projectName);
         await sleep(500);
-        createIndexTemplate(projectName);
+        createIndexTemplate(projectName, frontend);
         await sleep(500);
         createIndexView(projectName);
+        await sleep(500);
+        copyStylingFiles(projectName, frontend);
         await sleep(500);
         installDependencies(projectName, backend);
         await sleep(500);
@@ -89,13 +92,29 @@ function startDjangoProject(projectName) {
     }
 }
 
-function createIndexTemplate(projectName) {
+function createIndexTemplate(projectName, styling) {
     const spinner = ora('Creating index template').start();
     try {
         const templatesDir = path.join(process.cwd(), projectName, 'templates');
         const indexPath = path.join(templatesDir, 'index.html');
 
-        // Create index.html
+        // Define stylesheet link based on styling choice
+        let stylesheetLink;
+        switch (styling) {
+            case 'regular':
+                stylesheetLink = "{% static 'style.css' %}";
+                break;
+            case 'bulma':
+                stylesheetLink = "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css";
+                break;
+            case 'tailwind':
+                stylesheetLink = "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css";
+                break;
+            case 'bootstrap':
+                stylesheetLink = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css";
+                break;
+        }
+         // Create index.html
         const indexCode = `
         <!DOCTYPE html>
         <html lang="en">
@@ -103,7 +122,7 @@ function createIndexTemplate(projectName) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Welcome to HoTMiX!</title>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+            <link rel="stylesheet" type="text/css" href="${stylesheetLink}">
         </head>
         <body>
             <header class="hero is-dark">
@@ -199,8 +218,14 @@ function configureDjangoSettings(projectName) {
         const settingsPath = path.join(process.cwd(), projectName, 'settings.py');
         let settings = fs.readFileSync(settingsPath, 'utf8');
 
+        // Add import os statement at the top
+        settings = "import os\n" + settings;
+
         // Add templates directory to TEMPLATES setting
         settings = settings.replace("'DIRS': [],", `'DIRS': [BASE_DIR / '${projectName}' / 'templates'],`);
+
+        // Add STATIC_ROOT setting
+        settings += "\nSTATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')\n";
 
         fs.writeFileSync(settingsPath, settings);
         spinner.succeed(chalk.green('Django settings configured successfully.'));
@@ -255,6 +280,18 @@ function copyTemplateFiles(projectName, backend, frontend) {
     }
 }
 
+function copyStylingFiles(projectName, styling) {
+    const spinner = ora('Copying styling files').start();
+    try {
+        const sourcePath = path.join(__dirname, '..', 'django', styling, 'static');
+        const destinationPath = path.join(process.cwd(), projectName, 'static');
+        fsExtra.copySync(sourcePath, destinationPath);
+        spinner.succeed(chalk.green('Styling files copied successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error copying styling files: ${error}`));
+    }
+}
+
 function installDependencies(projectName, backend) {
     const spinner = ora('Installing dependencies').start();
     process.chdir(projectName);
@@ -293,6 +330,7 @@ function provideInstructions(backend) {
         case 'django':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'python manage.py migrate' to migrate settings.
+3. Run 'python manage.py collectstatic'.
 3. Run 'python manage.py runserver' to start the server.
 4. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
             break;
