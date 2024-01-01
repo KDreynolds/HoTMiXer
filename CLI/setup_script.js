@@ -309,6 +309,7 @@ function modifyIndexTemplate(projectName, styling) {
                 // Add Bulma-specific classes to the HTML elements
                 indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="hero is-primary">');
                 indexCode = indexCode.replace('<h1 class="title">', '<h1 class="title is-1">');
+                indexCode = indexCode.replace('<table id="data-table" class="table is-fullwidth">', '<table id="data-table" class="table is-striped">');
                 
                 // Add additional sections and elements
                 const welcomeSection = `
@@ -348,6 +349,7 @@ function modifyIndexTemplate(projectName, styling) {
                     // Add Bootstrap-specific classes to the HTML elements
                     indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="bg-primary text-white text-center py-3">');
                     indexCode = indexCode.replace('<h1 class="title">', '<h1 class="display-4">');
+                    indexCode = indexCode.replace('<table id="data-table" class="table is-fullwidth">', '<table id="data-table" class="table table-striped">');
                     
                     // Add additional sections and elements
                     const welcomeSectionBootstrap = `
