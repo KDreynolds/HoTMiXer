@@ -12,5 +12,12 @@
     <p>Edit this file to start building your application.</p>
     <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
     <a href="https://docs.djangoproject.com/" target="_blank">Learn more about Django</a>
+
+    <div id="update-div">
+        This content will be replaced by the server's response.
+    </div>
+    <button hx-post="/endpoint" hx-trigger="click" hx-target="#update-div" hx-swap="outerHTML">
+        Click Me!
+    </button>
 </body>
 </html>
