@@ -1,9 +1,0 @@
-<!-- new_item_form.ejs -->
-
-<form action="/add-item" method="post" hx-post="/add-item" hx-target="#data-section" class="space-y-4">
-    <label for="name" class="block">Name:</label>
-    <input type="text" id="name" name="name" placeholder="Enter item name" class="block w-full">
-
-    <button type="submit" class="px-4 py-2 bg-blue-500 text-white">Add</button>
-    <button type="button" hx-get="/data-table" hx-target="#data-section" class="px-4 py-2 bg-gray-500 text-white">Cancel</button>
-</form>

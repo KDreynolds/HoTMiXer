@@ -21,7 +21,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function createNewProject(projectName, backend, frontend) {
+async function createNewProject(projectName, backend) {
     if (backend === 'django') {
         installDjango();
         startDjangoProject(projectName);
@@ -30,13 +30,7 @@ async function createNewProject(projectName, backend, frontend) {
         await sleep(500);
         createTemplatesDirectory(projectName);
         await sleep(500);
-        createIndexTemplate(projectName, frontend);
-        await sleep(500);
         createIndexView(projectName);
-        await sleep(500);
-        copyStylingFiles(projectName, frontend);
-        await sleep(500);
-        modifyIndexTemplate(projectName, frontend);
         await sleep(500);
         installDependencies(projectName, backend);
         await sleep(500);
@@ -47,7 +41,7 @@ async function createNewProject(projectName, backend, frontend) {
     await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
     await sleep(500); // Delay of 0.5 seconds
-    copyTemplateFiles(projectName, backend, frontend);
+    copyTemplateFiles(projectName, backend);
     await sleep(500); // Delay of 0.5 seconds
     installDependencies(projectName, backend);
     await sleep(500); // Delay of 0.5 seconds
@@ -94,99 +88,34 @@ function startDjangoProject(projectName) {
     }
 }
 
-function createIndexTemplate(projectName, styling) {
-    const spinner = ora('Creating index template').start();
-    try {
-        const templatesDir = path.join(process.cwd(), projectName, 'templates');
-        const indexPath = path.join(templatesDir, 'index.html');
 
-        // Define stylesheet link based on styling choice
-        let stylesheetLink;
-        switch (styling) {
-            case 'regular':
-                stylesheetLink = "{% static 'style.css' %}";
-                break;
-            case 'bulma':
-                stylesheetLink = "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css";
-                break;
-            case 'tailwind':
-                stylesheetLink = "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css";
-                break;
-            case 'bootstrap':
-                stylesheetLink = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css";
-                break;
-        }
-         // Create index.html
-        const indexCode = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to HoTMiX!</title>
-            <link rel="stylesheet" type="text/css" href="${stylesheetLink}">
-        </head>
-        <body>
-            <header class="hero is-dark">
-                <div class="hero-body">
-                    <h1 class="title">Welcome to HoTMiX!</h1>
-                </div>
-            </header>
-            <main id="main-content" class="section">
-                <section class="welcome-section">
-                    <h2 class="title">Your project has been successfully created with HoTMiX!</h2>
-                    <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
-                    <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link button is-link">Learn more about HTMX</a>
-                </section>
-                <section id="data-section" class="section">
-                    <h2 class="title">Data Table</h2>
-                    <table id="data-table" class="table is-fullwidth">
-                        <!-- Table Headers -->
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Actions</th>
-                        </tr>
-                        <!-- Data Rows Fetched from Backend -->
-                        {% for item in items %}
-                        <tr>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.name }}</td>
-                            <td>
-                                <!-- Action buttons -->
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    <button hx-get="/new_item_form" hx-target="#modal" hx-toggle="modal" class="button is-primary">Add New Item</button>
-                </section>
-                
-                <!-- Modal for Adding/Editing Items -->
-                <div id="modal" class="modal">
-                    <!-- Content loaded dynamically by HTMX -->
-                </div>
-            </main>
-            <footer class="footer">
-                <p>Created with HoTMiX - Your HTMX scaffolding tool.</p>
-            </footer>
-            <script src="https://unpkg.com/htmx.org"></script>
-            <!-- <script src="script.js"></script> -->
-        </body>
-        </html>
-`;
-        fs.writeFileSync(indexPath, indexCode);
-
-        spinner.succeed(chalk.green('Index template created successfully.'));
-    } catch (error) {
-        spinner.fail(chalk.red(`Error creating index template: ${error}`));
-    }
-}
 
 function createIndexView(projectName) {
     const spinner = ora('Creating index view').start();
     try {
+        const templatesDir = path.join(process.cwd(), projectName, 'templates');
+        const indexPath = path.join(templatesDir, 'index.html');
         const viewsPath = path.join(process.cwd(), projectName, 'views.py');
         const urlsPath = path.join(process.cwd(), projectName, 'urls.py');
+        const indexCode = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to HoTMiX!</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <img src="hotmix_logo.png" alt="HotMiX Logo">
+    <h1>Welcome to HoTMiX!</h1>
+    <p>Edit this file to start building your application.</p>
+    <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
+    <a href="https://docs.djangoproject.com/" target="_blank">Learn more about Django</a>
+</body>
+</html>
+`;
+    fs.writeFileSync(indexPath, indexCode); 
 
         // Create views.py
         const viewsCode = `
@@ -254,8 +183,8 @@ function createProjectDirectory(projectName) {
 
 function createTemplatesDirectory(projectName) {
     const spinner = ora('Creating templates directory').start();
+    const templatesDir = path.join(process.cwd(), projectName, 'templates');
     try {
-        const templatesDir = path.join(process.cwd(), projectName, 'templates');
         if (!fs.existsSync(templatesDir)) {
             fs.mkdirSync(templatesDir);
             spinner.succeed(chalk.green(`Templates directory created successfully.`));
@@ -265,11 +194,19 @@ function createTemplatesDirectory(projectName) {
     } catch (error) {
         spinner.fail(chalk.red(`Error creating templates directory: ${error}`));
     }
+    const cssPath = path.join(templatesDir, 'style.css');
+    const cssCode = `
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+`;
+    fs.writeFileSync(cssPath, cssCode);
 }
 
-function copyTemplateFiles(projectName, backend, frontend) {
+function copyTemplateFiles(projectName, backend) {
     const spinner = ora('Copying template files').start();
-    const templateDir = path.join(__dirname, '..', backend, frontend);
+    const templateDir = path.join(__dirname, '..', backend);
     fsExtra.copySync(templateDir, projectName);
     spinner.succeed(chalk.green('Template files copied successfully.'));
 
@@ -282,98 +219,6 @@ function copyTemplateFiles(projectName, backend, frontend) {
     }
 }
 
-function copyStylingFiles(projectName, styling) {
-    const spinner = ora('Copying styling files').start();
-    try {
-        const sourcePath = path.join(__dirname, '..', 'django', styling, 'static');
-        const destinationPath = path.join(process.cwd(), projectName, 'static');
-        fsExtra.copySync(sourcePath, destinationPath);
-        spinner.succeed(chalk.green('Styling files copied successfully.'));
-    } catch (error) {
-        spinner.fail(chalk.red(`Error copying styling files: ${error}`));
-    }
-}
-
-function modifyIndexTemplate(projectName, styling) {
-    const spinner = ora('Modifying index template').start();
-    try {
-        const templatesDir = path.join(process.cwd(), projectName, 'templates');
-        const indexPath = path.join(templatesDir, 'index.html');
-        
-        // Read the existing index.html file
-        let indexCode = fs.readFileSync(indexPath, 'utf8');
-        
-        // Modify the indexCode based on the styling choice
-        switch (styling) {
-            case 'bulma':
-                // Add Bulma-specific classes to the HTML elements
-                indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="hero is-primary">');
-                indexCode = indexCode.replace('<h1 class="title">', '<h1 class="title is-1">');
-                indexCode = indexCode.replace('<table id="data-table" class="table is-fullwidth">', '<table id="data-table" class="table is-striped">');
-                
-                // Add additional sections and elements
-                const welcomeSection = `
-                <section class="welcome-section">
-                    <h2 class="title">Your project has been successfully created with HoTMiX!</h2>
-                    <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
-                    <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link button is-link">Learn more about HTMX</a>
-                </section>
-                `;
-                indexCode = indexCode.replace('<main id="main-content">', `<main id="main-content" class="section">${welcomeSection}`);
-                
-                // Modify existing sections and elements
-                indexCode = indexCode.replace('<table>', '<table class="table is-fullwidth">');
-                break;
-            case 'regular':
-                // Modify indexCode for 'regular' styling
-                break;
-                case 'tailwind':
-                    // Add Tailwind-specific classes to the HTML elements
-                    indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="bg-gray-800 text-white text-center py-3">');
-                    indexCode = indexCode.replace('<h1 class="title">', '<h1 class="text-2xl">');
-                    
-                    // Add additional sections and elements
-                    const welcomeSectionTailwind = `
-                    <section class="welcome-section">
-                        <h2>Your project has been successfully created with HoTMiX!</h2>
-                        <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
-                        <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link">Learn more about HTMX</a>
-                    </section>
-                    `;
-                    indexCode = indexCode.replace('<main id="main-content">', `<main id="main-content" class="flex-grow py-4">${welcomeSectionTailwind}`);
-                    
-                    // Modify existing sections and elements
-                    indexCode = indexCode.replace('<footer>', '<footer class="bg-gray-200 text-center py-3">');
-                    break;
-                case 'bootstrap':
-                    // Add Bootstrap-specific classes to the HTML elements
-                    indexCode = indexCode.replace('<header class="hero is-dark">', '<header class="bg-primary text-white text-center py-3">');
-                    indexCode = indexCode.replace('<h1 class="title">', '<h1 class="display-4">');
-                    indexCode = indexCode.replace('<table id="data-table" class="table is-fullwidth">', '<table id="data-table" class="table table-striped">');
-                    
-                    // Add additional sections and elements
-                    const welcomeSectionBootstrap = `
-                    <section class="welcome-section">
-                        <h2 class="display-5">Your project has been successfully created with HoTMiX!</h2>
-                        <p>This is a simple SPA template integrated with HTMX. You can modify this template to start building your application.</p>
-                        <a href="https://htmx.org/docs/" target="_blank" class="htmx-docs-link btn btn-primary">Learn more about HTMX</a>
-                    </section>
-                    `;
-                    indexCode = indexCode.replace('<main id="main-content">', `<main id="main-content" class="container my-5">${welcomeSectionBootstrap}`);
-                    
-                    // Modify existing sections and elements
-                    indexCode = indexCode.replace('<table>', '<table class="table">');
-                    break;
-        }
-
-        // Write the modified indexCode back to index.html
-        fs.writeFileSync(indexPath, indexCode);
-        
-        spinner.succeed(chalk.green('Index template modified successfully.'));
-    } catch (error) {
-        spinner.fail(chalk.red(`Error modifying index template: ${error}`));
-    }
-}
 
 function installDependencies(projectName, backend) {
     const spinner = ora('Installing dependencies').start();
@@ -420,7 +265,7 @@ function provideInstructions(backend) {
         case 'node':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'npm install' to install dependencies.
-3. Run 'npm start' to start the server.
+3. Run 'node app.js' to start the server.
 4. Visit the Express documentation for more information: https://expressjs.com/`));
             break;
         default:
@@ -432,11 +277,10 @@ function provideInstructions(backend) {
 program
   .command('create <projectName>')
   .option('-b, --backend <backend>', 'Backend framework')
-  .option('-s, --styling <styling>', 'Styling option')
   .action((projectName, options) => {
     console.log(`Command received: create ${projectName}`);
-        if (options.backend && options.styling) {
-            createNewProject(projectName, options.backend, options.styling);
+        if (options.backend) {
+            createNewProject(projectName, options.backend);
         } else {
             inquirer.prompt([
                 {
@@ -445,14 +289,8 @@ program
                     message: 'Which backend would you like to use?',
                     choices: ['flask', 'gin', 'node', 'django'],
                 },
-                {
-                    type: 'list',
-                    name: 'styling',
-                    message: 'Which styling would you like to use?',
-                    choices: ['regular', 'tailwind', 'bulma', 'bootstrap'],
-                },
             ]).then(answers => {
-                createNewProject(projectName, answers.backend, answers.styling);
+                createNewProject(projectName, answers.backend);
             });
         }
     });
