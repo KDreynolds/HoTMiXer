@@ -117,8 +117,10 @@ function createIndexView(projectName) {
 <button hx-get="/endpoint" hx-trigger="click" hx-target="#update-div" hx-swap="outerHTML">
     Click Me!
 </button>
-<a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a> 
-<a href="https://docs.djangoproject.com/" target="_blank">Learn more about Django</a>
+<div class="link-container">
+    <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
+    <a href="https://expressjs.com/" target="_blank">Learn more about Express</a>
+</div>
 </body>
 </html>
 `;
