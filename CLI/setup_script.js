@@ -103,15 +103,22 @@ function createIndexView(projectName) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to HoTMiX!</title>
+    <title>Welcome to HoTMiXer!</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <img src="hotmix_logo.png" alt="HotMiX Logo">
-    <h1>Welcome to HoTMiX!</h1>
+    <img src="hotmix_logo.png" alt="HotMiXer Logo">
+    <h1>Welcome to HoTMiXer!</h1>
     <p>Edit this file to start building your application.</p>
-    <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
-    <a href="https://docs.djangoproject.com/" target="_blank">Learn more about Django</a>
+    
+    <div id="update-div">
+        It is so over...
+</div>
+<button hx-get="/endpoint" hx-trigger="click" hx-target="#update-div" hx-swap="outerHTML">
+    Click Me!
+</button>
+<a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a> 
+<a href="https://docs.djangoproject.com/" target="_blank">Learn more about Django</a>
 </body>
 </html>
 `;
@@ -196,10 +203,42 @@ function createTemplatesDirectory(projectName) {
     }
     const cssPath = path.join(templatesDir, 'style.css');
     const cssCode = `
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-}
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #1a1a2e; /* dark blue/dark grey color */
+        color: #f0f0f0; /* light grey color */
+    }
+    
+    header {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        width: 100%;
+    }
+    
+    #main-content {
+        flex: 1;
+        padding: 2rem;
+        width: 100%;
+    }
+    
+    img {
+        width: 50vw; /* set the logo width to 50% of the viewport width */
+        height: auto; /* maintain the aspect ratio */
+        margin-bottom: 2rem; /* add some space below the logo */
+    }
+    
+    p, a {
+        margin: 1rem 0; /* add some vertical space around paragraphs and links */
+    }
 `;
     fs.writeFileSync(cssPath, cssCode);
 }
