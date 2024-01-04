@@ -49,13 +49,11 @@ Areas needing work
 
 Right now there are two main areas that need attention
 
-    1. Add Django as a backend option. - Complete
+    1. Add Laravel/PHP as a backend option.
 
-    2. Add Laravel/PHP as a backend option.
+    2. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
 
-    4. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
-
-    5. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
+    3. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
 
 # License
 

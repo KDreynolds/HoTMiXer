@@ -293,14 +293,12 @@ function provideInstructions(backend) {
         default:
             console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
     }
-    spinner.succeed(chalk.green('Instructions provided successfully.'));
 }
 
 program
   .command('create <projectName>')
   .option('-b, --backend <backend>', 'Backend framework')
   .action((projectName, options) => {
-    console.log(`Command received: create ${projectName}`);
         if (options.backend) {
             createNewProject(projectName, options.backend);
         } else {
