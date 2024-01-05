@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #1a1a2e; /* dark blue/dark grey color */
+    color: #f0f0f0; /* light grey color */
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    width: 100%;
+}
+
+#main-content {
+    flex: 1;
+    padding: 2rem;
+    width: 100%;
+}
+
+img {
+    width: 50vw; /* set the logo width to 50% of the viewport width */
+    height: auto; /* maintain the aspect ratio */
+    margin-bottom: 2rem; /* add some space below the logo */
+}
+
+p, a {
+    margin: 1rem 0; /* add some vertical space around paragraphs and links */
+}
+
+a {
+    color: green;
+    margin-right: 1rem;
+    display: inline-block;
+}
+
+.link-container {
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+    padding-top: 5%;
+}
+
+div {
+    padding: 1%;
+}
