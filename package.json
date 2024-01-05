@@ -5,7 +5,7 @@
   "main": "CLI/setup_script.js",
   "type": "module",
   "bin": {
-    "hotmixer": "./CLI/setup_script.js"
+    "hotmixer": "CLI/setup_script.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
