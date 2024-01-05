@@ -37,7 +37,6 @@ async function createNewProject(projectName, backend) {
         initializeGitRepository();
         await sleep(500);
         provideInstructions(backend);
-        await sleep(500);
     } else {
     await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
@@ -49,7 +48,6 @@ async function createNewProject(projectName, backend) {
     initializeGitRepository();
     await sleep(500); // Delay of 0.5 seconds
     provideInstructions(backend); // Provide instructions based on the chosen backend
-    await sleep(500);
     }
 }
 
@@ -261,6 +259,7 @@ function initializeGitRepository() {
 
 function provideInstructions(backend) {
     const spinner = ora('Providing instructions').start();
+    spinner.succeed();
     console.log(chalk.green(`\nProject setup complete! Here's how to get started:\n`));
 
     switch (backend) {
@@ -293,7 +292,6 @@ function provideInstructions(backend) {
         default:
             console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
     }
-    spinner.succeed();
 }
 
 program
