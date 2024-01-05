@@ -1,6 +1,6 @@
 {
   "name": "hotmixer",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "main": "CLI/setup_script.js",
   "type": "module",
@@ -8,6 +8,7 @@
     "hotmixer": "CLI/setup_script.js"
   },
   "scripts": {
+    "version": "echo 'Current version:' && echo $npm_package_version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
