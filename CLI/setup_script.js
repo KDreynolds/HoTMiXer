@@ -30,6 +30,8 @@ async function createNewProject(projectName, backend) {
         await sleep(500);
         createTemplatesDirectory(projectName);
         await sleep(500);
+        copyStaticFiles(projectName);
+        await sleep(500);
         createIndexView(projectName);
         await sleep(500);
         installDependencies(projectName, backend);
@@ -100,15 +102,17 @@ function createIndexView(projectName) {
         const urlsPath = path.join(process.cwd(), projectName, 'urls.py');
         const indexCode = `
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to HoTMiXer!</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 </head>
 <body>
-    <img src="hotmix_logo.png" alt="HotMiXer Logo">
+    <img src="{% static 'hotmix_logo.png' %}" alt="HotMiXer Logo">
     <h1>Welcome to HoTMiXer!</h1>
     <p>Edit this file to start building your application.</p>
     
@@ -120,7 +124,7 @@ function createIndexView(projectName) {
 </button>
 <div class="link-container">
     <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
-    <a href="https://expressjs.com/" target="_blank">Learn more about Express</a>
+    <a href="https://docs.djangoproject.com/en/5.0/" target="_blank">Learn more about Django</a>
 </div>
 </body>
 </html>
@@ -128,21 +132,26 @@ function createIndexView(projectName) {
     fs.writeFileSync(indexPath, indexCode); 
 
         // Create views.py
-        const viewsCode = `
+    const viewsCode = `
 from django.shortcuts import render
+from django.http import HttpResponse
 
 def index(request):
     return render(request, 'index.html')
+
+def endpoint(request):
+    return HttpResponse('We are so back!')
 `;
-        fs.writeFileSync(viewsPath, viewsCode);
+    fs.writeFileSync(viewsPath, viewsCode);
 
         // Create urls.py
         const urlsCode = `
 from django.urls import path
-from .views import index
+from .views import index, endpoint
 
 urlpatterns = [
     path('', index, name='index'),
+    path('endpoint', endpoint, name='endpoint'),
 ]
 `;
         fs.writeFileSync(urlsPath, urlsCode);
@@ -167,6 +176,9 @@ function configureDjangoSettings(projectName) {
 
         // Add STATIC_ROOT setting
         settings += "\nSTATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')\n";
+
+        // Add STATICFILES_DIRS setting
+        settings += "\nSTATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]\n";
 
         fs.writeFileSync(settingsPath, settings);
         spinner.succeed(chalk.green('Django settings configured successfully.'));
@@ -204,46 +216,15 @@ function createTemplatesDirectory(projectName) {
     } catch (error) {
         spinner.fail(chalk.red(`Error creating templates directory: ${error}`));
     }
-    const cssPath = path.join(templatesDir, 'style.css');
-    const cssCode = `
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background-color: #1a1a2e; /* dark blue/dark grey color */
-        color: #f0f0f0; /* light grey color */
-    }
     
-    header {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 1rem;
-        width: 100%;
-    }
-    
-    #main-content {
-        flex: 1;
-        padding: 2rem;
-        width: 100%;
-    }
-    
-    img {
-        width: 50vw; /* set the logo width to 50% of the viewport width */
-        height: auto; /* maintain the aspect ratio */
-        margin-bottom: 2rem; /* add some space below the logo */
-    }
-    
-    p, a {
-        margin: 1rem 0; /* add some vertical space around paragraphs and links */
-    }
-`;
-    fs.writeFileSync(cssPath, cssCode);
+}
+
+function copyStaticFiles(projectName) {
+    const spinner = ora('Copying static files').start();
+    const staticSource = path.join(__dirname, '..', 'django', 'static');
+    const staticDestination = path.join(process.cwd(), 'static');
+    fsExtra.copySync(staticSource, staticDestination);
+    spinner.succeed(chalk.green('Static files copied successfully.'));
 }
 
 function copyTemplateFiles(projectName, backend) {
@@ -313,14 +294,12 @@ function provideInstructions(backend) {
         default:
             console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
     }
-    spinner.succeed(chalk.green('Instructions provided successfully.'));
 }
 
 program
   .command('create <projectName>')
   .option('-b, --backend <backend>', 'Backend framework')
   .action((projectName, options) => {
-    console.log(`Command received: create ${projectName}`);
         if (options.backend) {
             createNewProject(projectName, options.backend);
         } else {
