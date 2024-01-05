@@ -37,6 +37,7 @@ async function createNewProject(projectName, backend) {
         initializeGitRepository();
         await sleep(500);
         provideInstructions(backend);
+        await sleep(500);
     } else {
     await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
@@ -47,7 +48,8 @@ async function createNewProject(projectName, backend) {
     await sleep(500); // Delay of 0.5 seconds
     initializeGitRepository();
     await sleep(500); // Delay of 0.5 seconds
-    provideInstructions(backend); // Provide instructions based on the chosen backend
+    provideInstructions(backend);// Provide instructions based on the chosen backend
+    await sleep(500); 
     }
 }
 
