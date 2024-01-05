@@ -1,6 +1,6 @@
 {
   "name": "hotmixer",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "CLI/setup_script.js",
   "type": "module",
