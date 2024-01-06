@@ -19,7 +19,7 @@
     </button>
     <div class="link-container">
         <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
-        <a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank">Learn more about Flask</a>
+        <a href="https://laravel.com/docs/10.x" target="_blank">Learn more about Laravel</a>
     </div>
 </body>
 </html>

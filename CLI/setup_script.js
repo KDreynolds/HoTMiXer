@@ -38,7 +38,16 @@ async function createNewProject(projectName, backend) {
         await sleep(500);
         provideInstructions(backend);
         await sleep(500);
-    } else {
+    }  if (backend === 'laravel') {
+        copyLaravelProject(projectName);
+        await sleep(500); // Delay of 0.5 seconds
+        installComposerDependencies(projectName);
+        await sleep(500); // Delay of 0.5 seconds
+        initializeGitRepository();
+        await sleep(500); // Delay of 0.5 seconds
+        provideInstructions(backend);// Provide instructions based on the chosen backend
+        await sleep(500); 
+    }  else {
     await sleep(500); // Delay of 0.5 seconds
     createProjectDirectory(projectName);
     await sleep(500); // Delay of 0.5 seconds
@@ -241,6 +250,24 @@ function copyTemplateFiles(projectName, backend) {
     }
 }
 
+function copyLaravelProject(projectName) {
+    const spinner = ora('Copying Laravel project').start();
+    const templateDir = path.join(__dirname, '..', 'laravel');
+    fsExtra.copySync(templateDir, projectName);
+    spinner.succeed(chalk.green('Laravel project copied successfully.'));
+}
+
+function installComposerDependencies(projectName) {
+    const spinner = ora('Installing Composer dependencies').start();
+    process.chdir(projectName);
+    try {
+        child_process.execSync('composer install', { stdio: 'inherit' });
+        spinner.succeed(chalk.green('Composer dependencies installed successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error installing Composer dependencies: ${error}`));
+    }
+}
+
 
 function installDependencies(projectName, backend) {
     const spinner = ora('Installing dependencies').start();
@@ -291,6 +318,12 @@ function provideInstructions(backend) {
 3. Run 'node app.js' to start the server.
 4. Visit the Express documentation for more information: https://expressjs.com/`));
             break;
+        case 'laravel':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'composer install' to install dependencies.
+3. Run 'php artisan serve' to start the server.
+4. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
+            break;
         default:
             console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
     }
@@ -308,7 +341,7 @@ program
                     type: 'list',
                     name: 'backend',
                     message: 'Which backend would you like to use?',
-                    choices: ['flask', 'gin', 'node', 'django'],
+                    choices: ['flask', 'gin', 'node', 'django', 'laravel'],
                 },
             ]).then(answers => {
                 createNewProject(projectName, answers.backend);
