@@ -255,6 +255,12 @@ function copyLaravelProject(projectName) {
     const templateDir = path.join(__dirname, '..', 'laravel');
     fsExtra.copySync(templateDir, projectName);
     spinner.succeed(chalk.green('Laravel project copied successfully.'));
+
+    // Copy .env.example to .env
+    const envExamplePath = path.join(projectName, '.env.example');
+    const envPath = path.join(projectName, '.env');
+    fsExtra.copySync(envExamplePath, envPath);
+    spinner.succeed(chalk.green('.env file created successfully.'));
 }
 
 function installComposerDependencies(projectName) {
@@ -321,6 +327,7 @@ function provideInstructions(backend) {
         case 'laravel':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'composer install' to install dependencies.
+3. Run 'php artisan key:generate.
 3. Run 'php artisan serve' to start the server.
 4. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
             break;

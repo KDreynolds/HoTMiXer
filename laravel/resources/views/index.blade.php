@@ -10,7 +10,7 @@
 <body>
     <img src="{{ asset('images/hotmix_logo.png') }}" alt="HotMiX Logo">
     <h1>Welcome to HoTMiXer!</h1>
-    <p>Edit templates/index.html to start building your application.</p>
+    <p>Edit resources/views/index.blade.php to start building your application.</p>
     <div id="update-div">
         It is so over...
     </div>
