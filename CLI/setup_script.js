@@ -15,12 +15,21 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const frameworkToFolder = {
+    'Flask': 'flask',
+    'Django': 'django',
+    'Gin': 'gin',
+    'Express': 'node', // Assuming 'node' is the folder name for Express
+    'Laravel': 'laravel',
+    'Actix Web': 'rust' // Assuming 'rust' is the folder name for Actix Web
+};
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function createNewProject(projectName, backend) {
-    if (backend === 'django') {
+    if (backend === 'Django') {
         installDjango();
         startDjangoProject(projectName);
         await sleep(500);
@@ -38,7 +47,7 @@ async function createNewProject(projectName, backend) {
         await sleep(500);
         provideInstructions(backend);
         await sleep(500);
-    }  if (backend === 'laravel') {
+    }  if (backend === 'Laravel') {
         copyLaravelProject(projectName);
         await sleep(500); // Delay of 0.5 seconds
         installComposerDependencies(projectName);
@@ -237,12 +246,24 @@ function copyStaticFiles(projectName) {
 
 function copyTemplateFiles(projectName, backend) {
     const spinner = ora('Copying template files').start();
-    const templateDir = path.join(__dirname, '..', backend);
+    const frameworkFolderMap = {
+        'Flask': 'flask',
+        'Django': 'django',
+        'Gin': 'gin',
+        'Express': 'node',
+        'Laravel': 'laravel',
+        'Actix Web': 'rust'
+    };
+
+    // Translate the backend name to the correct folder name
+    const backendFolder = frameworkFolderMap[backend] || backend;
+    const templateDir = path.join(__dirname, '..', backendFolder);
+
     fsExtra.copySync(templateDir, projectName);
     spinner.succeed(chalk.green('Template files copied successfully.'));
 
-    // If the backend is Flask, copy the requirements.txt file
-    if (backend === 'flask') {
+    // Existing functionality for Flask remains unchanged
+    if (backend === 'Flask') {
         const requirementsSource = path.join(__dirname, '..', 'flask', 'requirements.txt');
         const requirementsDestination = path.join(projectName, 'requirements.txt');
         fsExtra.copySync(requirementsSource, requirementsDestination);
@@ -274,7 +295,6 @@ function installComposerDependencies(projectName) {
     }
 }
 
-
 function installDependencies(projectName, backend) {
     const spinner = ora('Installing dependencies').start();
     process.chdir(projectName);
@@ -298,7 +318,7 @@ function provideInstructions(backend) {
     console.log(chalk.green(`\nProject setup complete! Here's how to get started:\n`));
 
     switch (backend) {
-        case 'flask':
+        case 'Flask':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Create a Python virtual environment with 'python -m venv env'.
 3. Activate the virtual environment with 'source env/bin/activate' (on Unix or MacOS) or '.\\env\\Scripts\\activate' (on Windows).
@@ -306,35 +326,49 @@ function provideInstructions(backend) {
 5. Run 'flask run' to start the server.
 6. Visit the Flask documentation for more information: https://flask.palletsprojects.com/`));
             break;
-        case 'gin':
+        case 'Gin':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'go run main.go' to start the server.
 3. Visit the Gin documentation for more information: https://gin-gonic.com/docs/`));
             break;
-        case 'django':
+        case 'Django':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'python manage.py migrate' to migrate settings.
 3. Run 'python manage.py collectstatic'.
 3. Run 'python manage.py runserver' to start the server.
 4. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
             break;
-        case 'node':
+        case 'Express':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'npm install' to install dependencies.
 3. Run 'node app.js' to start the server.
 4. Visit the Express documentation for more information: https://expressjs.com/`));
             break;
-        case 'laravel':
+        case 'Laravel':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'composer install' to install dependencies.
 3. Run 'php artisan key:generate.
 3. Run 'php artisan serve' to start the server.
 4. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
             break;
+        case 'Actix Web':
+    console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'cargo build' to build the project.
+3. Run 'cargo run' to start the server.
+4. Visit the Rust documentation for more information: https://doc.rust-lang.org/book/`));
+            break;
         default:
             console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
     }
 }
+
+const languageToFrameworks = {
+    Python: ['Flask', 'Django'],
+    Go: ['Gin'],
+    Node: ['Express'], 
+    PHP: ['Laravel'],
+    Rust: ['Actix Web']
+};
 
 program
   .command('create <projectName>')
@@ -346,14 +380,30 @@ program
             inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'backend',
-                    message: 'Which backend would you like to use?',
-                    choices: ['flask', 'gin', 'node', 'django', 'laravel'],
-                },
+                    name: 'language',
+                    message: 'Which programming language would you like to use for your backend?',
+                    choices: Object.keys(languageToFrameworks),
+                }
             ]).then(answers => {
-                createNewProject(projectName, answers.backend);
+                const language = answers.language;
+                const frameworks = languageToFrameworks[language];
+            
+                if (frameworks.length > 1) {
+                    inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: 'backend',
+                            message: 'Which web framework would you like to use?',
+                            choices: frameworks,
+                        }
+                    ]).then(answers => {
+                        createNewProject(projectName, answers.backend);
+                    });
+                } else {
+                    createNewProject(projectName, frameworks[0]);
+                }
             });
-        }
-    });
+        } // This is the missing closing brace
+  });
 
 program.parse(process.argv);
