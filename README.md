@@ -16,6 +16,7 @@ HoTMiXer is a command-line tool designed to simplify the process of starting new
 - Go (for Gin)
 - Node.js (for Node.js backend)
 - PHP and Composer (for Laravel)
+- Rust and Cargo (for Actix Web)
 
 # Installation
 
@@ -38,13 +39,11 @@ Still in the very early stages of development.
 
 # Creating a New Project
 
-To create a new HTMX project with a Flask backend, run the following command:
+To create a new HTMX project, run the following command:
 
-"hotmixer create myproject --backend flask"
+"hotmixer create myproject" and select the backend technology of choice.
 
-or run "hotmixer create myproject" and select flask as your backend option
-
-Replace `myproject` with your desired project name and `flask` with the backend of your choice (flask/django/gin/nodejs/laravel).
+Replace `myproject` with your desired project name.
 
 # Contributing
 
@@ -56,6 +55,8 @@ Right now there are two main areas that need attention
 
 1. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
 2. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
+
+Would also like to refactor how Laravel projects are built in the future, if done dynamically like we do with Django, would save a ton on the NPM packages actual size.
 
 # License
 
