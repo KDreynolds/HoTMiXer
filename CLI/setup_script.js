@@ -19,9 +19,10 @@ const frameworkToFolder = {
     'Flask': 'flask',
     'Django': 'django',
     'Gin': 'gin',
-    'Express': 'node', // Assuming 'node' is the folder name for Express
+    'Echo': 'echo',
+    'Express': 'node', 
     'Laravel': 'laravel',
-    'Actix Web': 'rust' // Assuming 'rust' is the folder name for Actix Web
+    'Actix Web': 'rust' 
 };
 
 function sleep(ms) {
@@ -49,24 +50,24 @@ async function createNewProject(projectName, backend) {
         await sleep(500);
     }  if (backend === 'Laravel') {
         copyLaravelProject(projectName);
-        await sleep(500); // Delay of 0.5 seconds
+        await sleep(500); 
         installComposerDependencies(projectName);
-        await sleep(500); // Delay of 0.5 seconds
+        await sleep(500); 
         initializeGitRepository();
-        await sleep(500); // Delay of 0.5 seconds
-        provideInstructions(backend);// Provide instructions based on the chosen backend
+        await sleep(500); 
+        provideInstructions(backend);
         await sleep(500); 
     }  else {
-    await sleep(500); // Delay of 0.5 seconds
+    await sleep(500); 
     createProjectDirectory(projectName);
-    await sleep(500); // Delay of 0.5 seconds
+    await sleep(500); 
     copyTemplateFiles(projectName, backend);
-    await sleep(500); // Delay of 0.5 seconds
+    await sleep(500); 
     installDependencies(projectName, backend);
-    await sleep(500); // Delay of 0.5 seconds
+    await sleep(500); 
     initializeGitRepository();
-    await sleep(500); // Delay of 0.5 seconds
-    provideInstructions(backend);// Provide instructions based on the chosen backend
+    await sleep(500); 
+    provideInstructions(backend);
     await sleep(500); 
     }
 }
@@ -252,7 +253,8 @@ function copyTemplateFiles(projectName, backend) {
         'Gin': 'gin',
         'Express': 'node',
         'Laravel': 'laravel',
-        'Actix Web': 'rust'
+        'Actix Web': 'rust',
+        'Echo': 'echo'
     };
 
     // Translate the backend name to the correct folder name
@@ -298,8 +300,20 @@ function installComposerDependencies(projectName) {
 function installDependencies(projectName, backend) {
     const spinner = ora('Installing dependencies').start();
     process.chdir(projectName);
-    // Rest of the code...
-    spinner.succeed(chalk.green('Dependencies installed successfully.'));
+
+    try {
+        switch (backend) {
+            // ...
+            case 'Echo':
+                child_process.execSync('go get github.com/labstack/echo/v4', { stdio: 'inherit' });
+                child_process.execSync('go get github.com/labstack/echo/v4/middleware', { stdio: 'inherit' });
+                break;
+            // ...
+        }
+        spinner.succeed(chalk.green('Dependencies installed successfully.'));
+    } catch (error) {
+        spinner.fail(chalk.red(`Error installing dependencies: ${error}`));
+    }
 }
 
 function initializeGitRepository() {
@@ -330,6 +344,11 @@ function provideInstructions(backend) {
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'go run main.go' to start the server.
 3. Visit the Gin documentation for more information: https://gin-gonic.com/docs/`));
+            break;
+        case 'Echo':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'go run main.go' to start the server.
+3. Visit the Echo documentation for more information: https://echo.labstack.com/guide`));
             break;
         case 'Django':
             console.log(chalk.blue(`1. Navigate to your project directory.
@@ -364,7 +383,7 @@ function provideInstructions(backend) {
 
 const languageToFrameworks = {
     Python: ['Flask', 'Django'],
-    Go: ['Gin'],
+    Go: ['Gin', 'Echo'],
     Node: ['Express'], 
     PHP: ['Laravel'],
     Rust: ['Actix Web']
