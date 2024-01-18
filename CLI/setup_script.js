@@ -303,10 +303,29 @@ function installDependencies(projectName, backend) {
 
     try {
         switch (backend) {
-            // ...
+            case 'Gin':
+                child_process.execSync('go get github.com/gin-gonic/gin', { stdio: 'inherit' });
+                break;
             case 'Echo':
                 child_process.execSync('go get github.com/labstack/echo/v4', { stdio: 'inherit' });
                 child_process.execSync('go get github.com/labstack/echo/v4/middleware', { stdio: 'inherit' });
+                break;
+            case 'Actix Web':
+                // cargo build, cargo run should be fine for user to run.
+                break;
+            case 'Flask':
+                // User should create env and run pip install reqs on their own.
+                break;
+            case 'Laravel':
+                child_process.execSync('composer install', { stdio: 'inherit' });
+                child_process.execSync('php artisan key:generate', { stdio: 'inherit' });
+                break;
+            case 'Express':
+                child_process.execSync('npm install', { stdio: 'inherit' });
+                break;
+            case 'Django':
+                child_process.execSync('python manage.py migrate', { stdio: 'inherit' });
+                child_process.execSync('python manage.py collectstatic', { stdio: 'inherit' });
                 break;
             // ...
         }
@@ -352,23 +371,18 @@ function provideInstructions(backend) {
             break;
         case 'Django':
             console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'python manage.py migrate' to migrate settings.
-3. Run 'python manage.py collectstatic'.
-3. Run 'python manage.py runserver' to start the server.
-4. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
+2. Run 'python manage.py runserver' to start the server.
+3. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
             break;
         case 'Express':
             console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'npm install' to install dependencies.
-3. Run 'node app.js' to start the server.
-4. Visit the Express documentation for more information: https://expressjs.com/`));
+2. Run 'node app.js' to start the server.
+3. Visit the Express documentation for more information: https://expressjs.com/`));
             break;
         case 'Laravel':
             console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'composer install' to install dependencies.
-3. Run 'php artisan key:generate.
-3. Run 'php artisan serve' to start the server.
-4. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
+2. Run 'php artisan serve' to start the server.
+3. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
             break;
         case 'Actix Web':
     console.log(chalk.blue(`1. Navigate to your project directory.
