@@ -12,8 +12,8 @@ HoTMiXer is a command-line tool designed to simplify the process of starting new
 
 ## Prerequisites
 
-- Python (for Flask)
-- Go (for Gin)
+- Python (for Flask and Django)
+- Go (for Gin and Echo)
 - Node.js (for Node.js backend)
 - PHP and Composer (for Laravel)
 - Rust and Cargo (for Actix Web)
