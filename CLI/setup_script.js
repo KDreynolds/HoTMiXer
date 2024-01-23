@@ -20,7 +20,8 @@ const frameworkToFolder = {
     'Django': 'django',
     'Gin': 'gin',
     'Echo': 'echo',
-    'Express': 'node', 
+    'Express': 'node',
+    'Koa': 'koa', 
     'Laravel': 'laravel',
     'Actix Web': 'rust' 
 };
@@ -363,6 +364,12 @@ function provideInstructions(backend) {
 3. Run 'node app.js' to start the server.
 4. Visit the Express documentation for more information: https://expressjs.com/`));
             break;
+        case 'Koa':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'npm install' to install dependencies.
+3. Run 'node app.js' to start the server.
+4. Visit the Express documentation for more information: https://koajs.com/`));
+            break;
         case 'Laravel':
             console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'composer install' to install dependencies.
@@ -384,7 +391,7 @@ function provideInstructions(backend) {
 const languageToFrameworks = {
     Python: ['Flask', 'Django'],
     Go: ['Gin', 'Echo'],
-    Node: ['Express'], 
+    Node: ['Express', 'Koa'], 
     PHP: ['Laravel'],
     Rust: ['Actix Web']
 };
