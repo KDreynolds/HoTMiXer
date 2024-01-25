@@ -1,6 +1,6 @@
 # HoTMiXer
 
-HoTMiXer is a command-line tool designed to simplify the process of starting new web projects. It allows developers to quickly scaffold projects using the HTMX framework, coupled with a choice of popular backend technologies like Flask, Gin, Node.js, and now Laravel.
+HoTMiXer is a command-line tool designed to simplify the process of starting new web projects. It allows developers to quickly scaffold projects using the HTMX framework, coupled with a choice of popular backend technologies like Flask, Gin, Express and more.
 
 # Features
 
@@ -10,13 +10,13 @@ HoTMiXer is a command-line tool designed to simplify the process of starting new
 
 # Getting Started
 
-## Prerequisites
+## Supported Backends
 
-- Python (for Flask and Django)
-- Go (for Gin and Echo)
-- Node.js (for Node.js backend)
-- PHP and Composer (for Laravel)
-- Rust and Cargo (for Actix Web)
+- Python (Flask and Django)
+- Go (Gin and Echo)
+- Node (Express and Koa)
+- PHP (Laravel)
+- Rust (Actix Web)
 
 # Installation
 
