@@ -23,7 +23,8 @@ const frameworkToFolder = {
     'Express': 'node',
     'Koa': 'koa', 
     'Laravel': 'laravel',
-    'Actix Web': 'rust' 
+    'Actix Web': 'rust',
+    'Sinatra': 'sinatra' 
 };
 
 function sleep(ms) {
@@ -255,7 +256,8 @@ function copyTemplateFiles(projectName, backend) {
         'Express': 'node',
         'Laravel': 'laravel',
         'Actix Web': 'rust',
-        'Echo': 'echo'
+        'Echo': 'echo',
+        'Sinatra': 'sinatra'
     };
 
     // Translate the backend name to the correct folder name
@@ -383,6 +385,11 @@ function provideInstructions(backend) {
 3. Run 'cargo run' to start the server.
 4. Visit the Rust documentation for more information: https://doc.rust-lang.org/book/`));
             break;
+        case 'Sinatra':
+            console.log(chalk.blue(`1. Navigate to your project directory.
+2. Run 'bundle install' to install dependencies.
+3. Visit the Laravel documentation for more information: https://sinatrarb.com/documentation.html`));
+            break;
         default:
             console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
     }
@@ -393,7 +400,8 @@ const languageToFrameworks = {
     Go: ['Gin', 'Echo'],
     Node: ['Express', 'Koa'], 
     PHP: ['Laravel'],
-    Rust: ['Actix Web']
+    Rust: ['Actix Web'],
+    Ruby: ['Sinatra']
 };
 
 program

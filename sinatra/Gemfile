@@ -2,4 +2,4 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'sinatra-reloader', require: false
-gem 'sinatra-html'
+gem 'sinatra-markaby', git: 'https://github.com/sbfaulkner/sinatra-markaby.git'
