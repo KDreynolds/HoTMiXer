@@ -15,16 +15,6 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const frameworkToFolder = {
-  'Flask': 'flask',
-  'Django': 'django',
-  'Gin': 'gin',
-  'Echo': 'echo',
-  'Express': 'node',
-  'Koa': 'koa',
-  'Laravel': 'laravel',
-  'Actix Web': 'rust'
-};
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -388,7 +378,7 @@ function provideInstructions(backend) {
     case 'Axum':
       console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'cargo build' to build the project.
-3. Run 'RUST_LOG=debug cargo run' to start the server.
+3. Run 'cargo run' to start the server.
 4. Visit the Axum documentation for more information: https://github.com/tokio-rs/axum`));
       break;
     default:
