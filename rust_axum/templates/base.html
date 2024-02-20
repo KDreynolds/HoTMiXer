@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link href="/static/style.css" rel="stylesheet" />
+        <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
+        <!-- Allow any inheriting page to set it's own title -->
+        <title>{% block title %}{{ title }}{% endblock %}</title>
+        <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+</head>
+        <!-- Allow any inheriting page to extend head with additional assets -->
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div id="content">
+            <!-- Inheriting pages will have their content rendered here, similar to app root in React, Angular, etc. -->
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

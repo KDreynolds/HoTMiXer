@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to HoTMiXer!{% endblock %}
+
+{% block content %}
+<img src="../static/hotmix_logo.png" alt="HotMiX Logo">
+<h1>Welcome to HoTMiXer!</h1>
+<p>Edit templates/index.html to start building your application.</p>
+<div id="update-div">
+    It is so over...
+</div>
+<button hx-get="/api/hello" hx-trigger="click" hx-target="#update-div" hx-swap="outerHTML">
+    Click Me!
+</button>
+<div class="link-container">
+    <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
+    <a href="https://github.com/tokio-rs/axum" target="_blank">Learn more about Axum</a>
+    <a href="https://github.com/djc/askama" target="_blank">Learn more about Askama</a>
+</div>
+{% endblock %}
