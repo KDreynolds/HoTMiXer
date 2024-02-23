@@ -246,7 +246,8 @@ function copyTemplateFiles(projectName, backend) {
     'Laravel': 'laravel',
     'Actix Web': 'rust',
     'Axum': 'rust_axum',
-    'Echo': 'echo'
+    'Echo': 'echo',
+    'Mongoose': 'mongoose'
   };
 
   // Translate the backend name to the correct folder name
@@ -374,12 +375,18 @@ function provideInstructions(backend) {
 3. Run 'cargo run' to start the server.
 4. Visit the Rust documentation for more information: https://doc.rust-lang.org/book/`));
       break;
-
     case 'Axum':
       console.log(chalk.blue(`1. Navigate to your project directory.
 2. Run 'cargo build' to build the project.
 3. Run 'cargo run' to start the server.
 4. Visit the Axum documentation for more information: https://github.com/tokio-rs/axum`));
+      break;
+      case 'Mongoose':
+      console.log(chalk.blue(`1. Navigate to your project directory.
+2. Compile the server code (you will need a c compiler like gcc or clang): clang main.c mongoose.c -o server.exe -DMG_ENABLE_HTTP=1
+3. Run the server: ./server
+4. Open your browser and go to http://localhost:8000
+5. For more information on Mongoose, visit: https://mongoose.ws/`));
       break;
     default:
       console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
@@ -391,7 +398,8 @@ const languageToFrameworks = {
   Go: ['Gin', 'Echo'],
   Node: ['Express', 'Koa'],
   PHP: ['Laravel'],
-  Rust: ['Actix Web', 'Axum']
+  Rust: ['Actix Web', 'Axum'],
+  C: ['Mongoose']
 };
 
 program
