@@ -17,6 +17,7 @@ HoTMiXer is a command-line tool designed to simplify the process of starting new
 - Node (Express and Koa)
 - PHP (Laravel)
 - Rust (Actix Web and Axum)
+- C/C++ (Mongoose)
 
 # Installation
 
