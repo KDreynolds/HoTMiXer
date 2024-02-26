@@ -15,6 +15,19 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const frameworkToFolder = {
+  'Flask': 'flask',
+  'Django': 'django',
+  'Gin': 'gin',
+  'Echo': 'echo',
+  'Express': 'node',
+  'Koa': 'koa', 
+  'Laravel': 'laravel',
+  'Actix Web': 'rust',
+  'Axum': 'rust_axum',
+  'Mongoose': 'mongoose'
+};
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -435,7 +448,7 @@ program
           createNewProject(projectName, frameworks[0]);
         }
       });
-    } // This is the missing closing brace
+    } 
   });
 
 program.parse(process.argv);
