@@ -25,7 +25,8 @@ const frameworkToFolder = {
   'Laravel': 'laravel',
   'Actix Web': 'rust',
   'Axum': 'rust_axum',
-  'Mongoose': 'mongoose'
+  'Mongoose': 'mongoose',
+  'Clack': 'clack'
 };
 
 
@@ -34,46 +35,55 @@ function sleep(ms) {
 }
 
 async function createNewProject(projectName, backend) {
-  if (backend === 'Django') {
-    installDjango();
-    startDjangoProject(projectName);
-    await sleep(500);
-    configureDjangoSettings(projectName);
-    await sleep(500);
-    createTemplatesDirectory(projectName);
-    await sleep(500);
-    copyStaticFiles(projectName);
-    await sleep(500);
-    createIndexView(projectName);
-    await sleep(500);
-    installDependencies(projectName, backend);
-    await sleep(500);
-    initializeGitRepository();
-    await sleep(500);
-    provideInstructions(backend);
-    await sleep(500);
-  } if (backend === 'Laravel') {
-    copyLaravelProject(projectName);
-    await sleep(500);
-    installComposerDependencies(projectName);
-    await sleep(500);
-    initializeGitRepository();
-    await sleep(500);
-    provideInstructions(backend);
-    await sleep(500);
-  } else {
-    await sleep(500);
-    createProjectDirectory(projectName);
-    await sleep(500);
-    copyTemplateFiles(projectName, backend);
-    await sleep(500);
-    installDependencies(projectName, backend);
-    await sleep(500);
-    initializeGitRepository();
-    await sleep(500);
-    provideInstructions(backend);
-    await sleep(500);
+  switch(backend) {
+    case 'Django':
+      installDjango();
+      startDjangoProject(projectName);
+      await sleep(500);
+      configureDjangoSettings(projectName);
+      await sleep(500);
+      createTemplatesDirectory(projectName);
+      await sleep(500);
+      copyStaticFiles(projectName);
+      await sleep(500);
+      createIndexView(projectName);
+      await sleep(500);
+      installDependencies(projectName, backend);
+      break;
+    case 'Laravel':
+      copyLaravelProject(projectName);
+      await sleep(500);
+      installComposerDependencies(projectName);
+      await sleep(500);
+      initializeGitRepository();
+      await sleep(500);
+      provideInstructions(backend);
+      await sleep(500);
+      createProjectDirectory(projectName);
+      await sleep(500);
+      copyTemplateFiles(projectName, backend);
+      break;
+    case 'Clack':
+      createProjectDirectory(projectName);
+      await sleep(500);
+      copyTemplateFiles(projectName, backend);
+      await sleep(500);
+      createLispSystem(projectName, ["clack", "ningle", "ten"], `(:ten-template "templates" :file-extension "html")`);
+      await sleep(500);
+      createMainLisp(projectName, backend) ;
+      break;
+    default:
+      createProjectDirectory(projectName);
+      await sleep(500);
+      copyTemplateFiles(projectName, backend);
+      await sleep(500);
+      installDependencies(projectName, backend);
+      break;
   }
+  await sleep(500);
+  initializeGitRepository();
+  await sleep(500);
+  provideInstructions(backend);
 }
 
 function installDjango() {
@@ -209,7 +219,76 @@ function configureDjangoSettings(projectName) {
   }
 }
 
+function createLispSystem(projectName, dependencies, asdf_template_file_component) {
+  const spinner = ora('Setting up asdf system').start();
+  const depslist = dependencies.map(d => `"${d}"`).join(" ");
+  const system_path = path.join(process.cwd(), projectName, `${projectName}.asd`);
+  const system =
+`(in-package #:asdf-user)
 
+(defsystem "${projectName}"
+  :description ""
+  :author ""
+  :version "1.0.0"
+  :licence ""
+  :depends-on (${depslist})
+  :components
+  ((:module "src"
+    :serial t
+    :components
+     (${asdf_template_file_component}
+      (:file "main")))))
+`
+
+  try {
+    fs.writeFileSync(system_path, system)
+    spinner.succeed(chalk.green('Asdf system set up successfully.'));
+  } catch {
+    spinner.fail('Failed to set up asdf system');
+  }
+}
+
+function createMainLisp(projectName, backend) {
+  const spinner = ora('Creating "main.lisp"');
+  const main_lisp = path.join(process.cwd(), projectName, "src", "main.lisp");
+  if(backend == 'Clack') {
+    const content =
+`(defpackage #:${projectName}
+  (:use #:cl))
+(in-package #:${projectName})
+
+(defvar *app* (make-instance 'ningle:app))
+
+(setf (ningle:route *app* "/" :method :GET)
+  (lambda (args)
+    (declare (ignore args))
+    (ten-templates:index)))
+(setf (ningle:route *app* "/endpoint" :method :GET)
+  (lambda (args)
+    (declare (ignore args))
+    "We're so back!"))
+
+(defun server ()
+  (lack:builder
+    (:static :path "/public/"
+             :root #p"public/")
+    *app*))
+(defun start ()
+  (ten:compile-template "src/templates.html")
+  (clack:clackup (server)))
+
+(defvar *server*)
+#+nil
+(setf *server* (start))
+#+nil
+(clack:stop *server*)
+`;
+    fs.writeFileSync(main_lisp, content);
+    spinner.succeed(chalk.green("main.lisp created successfully."));
+  } else {
+    spinner.fail(chalk.red("Unknown backend for Lisp"));
+  }
+}
 
 function createProjectDirectory(projectName) {
   const spinner = ora('Creating project directory').start();
@@ -260,7 +339,8 @@ function copyTemplateFiles(projectName, backend) {
     'Actix Web': 'rust',
     'Axum': 'rust_axum',
     'Echo': 'echo',
-    'Mongoose': 'mongoose'
+    'Mongoose': 'mongoose',
+    'Clack': 'clack'
   };
 
   // Translate the backend name to the correct folder name
@@ -401,6 +481,17 @@ function provideInstructions(backend) {
 4. Open your browser and go to http://localhost:8000
 5. For more information on Mongoose, visit: https://mongoose.ws/`));
       break;
+      case 'Clack':
+      console.log(chalk.blue(`1. Navigate to your project directory.
+2. Start up your repl/slime
+3. Load the asdf system, and switch to your package
+4. Call the 'start' function to start the server
+5. Load code onto the repl dynamically, and develop interactively!
+6. For more information, just 'describe' the symbol you want, or for detailed information see:
+   https://github.com/fukamachi/lack: For the web framework, Clack/Lack
+   https://github.com/mmontone/ten: For the templating engine, Ten
+   https://github.com/fukamachi/ningle: For the router, Ningle`));
+      break;
     default:
       console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
   }
@@ -412,7 +503,8 @@ const languageToFrameworks = {
   Node: ['Express', 'Koa'],
   PHP: ['Laravel'],
   Rust: ['Actix Web', 'Axum'],
-  C: ['Mongoose']
+  C: ['Mongoose'],
+  Lisp: ['Clack']
 };
 
 program
