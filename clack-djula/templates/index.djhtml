@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to HoTMiX!</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+</head>
+<body>
+    <img src="/hotmix_logo.png" alt="HotMiXer Logo">
+    <p>Edit /src/templates.ten to start building your application.</p>
+
+    <div id="update-div">
+        It is so over...
+    </div>
+    <button hx-get="/endpoint" hx-trigger="click" hx-target="#update-div" hx-swap="outerHTML">
+        Click Me!
+    </button>
+    <div class="link-container">
+        <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
+        <a href="https://lisp-lang.org/" target="_blank">Learn more about Lisp</a>
+    </div>
+</body>
+</html>

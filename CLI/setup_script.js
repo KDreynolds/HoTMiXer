@@ -26,7 +26,8 @@ const frameworkToFolder = {
   'Actix Web': 'rust',
   'Axum': 'rust_axum',
   'Mongoose': 'mongoose',
-  'Clack': 'clack'
+  'Clack/Ten': 'clack-ten',
+  'Clack/Djula': 'clack-djula',
 };
 
 
@@ -63,12 +64,21 @@ async function createNewProject(projectName, backend) {
       await sleep(500);
       copyTemplateFiles(projectName, backend);
       break;
-    case 'Clack':
+    case 'Clack/Ten':
       createProjectDirectory(projectName);
       await sleep(500);
       copyTemplateFiles(projectName, backend);
       await sleep(500);
       createLispSystem(projectName, ["clack", "ningle", "ten"], `(:ten-template "templates" :file-extension "html")`);
+      await sleep(500);
+      createMainLisp(projectName, backend) ;
+      break;
+    case 'Clack/Djula':
+      createProjectDirectory(projectName);
+      await sleep(500);
+      copyTemplateFiles(projectName, backend);
+      await sleep(500);
+      createLispSystem(projectName, ["clack", "ningle", "djula"], ``);
       await sleep(500);
       createMainLisp(projectName, backend) ;
       break;
@@ -78,6 +88,8 @@ async function createNewProject(projectName, backend) {
       copyTemplateFiles(projectName, backend);
       await sleep(500);
       installDependencies(projectName, backend);
+      await sleep(500);
+      createMainLisp(projectName, backend) ;
       break;
   }
   await sleep(500);
@@ -251,7 +263,7 @@ function createLispSystem(projectName, dependencies, asdf_template_file_componen
 function createMainLisp(projectName, backend) {
   const spinner = ora('Creating "main.lisp"');
   const main_lisp = path.join(process.cwd(), projectName, "src", "main.lisp");
-  if(backend == 'Clack') {
+  if(backend == 'Clack/Ten') {
     const content =
 `(defpackage #:${projectName}
   (:use #:cl))
@@ -275,6 +287,39 @@ function createMainLisp(projectName, backend) {
     *app*))
 (defun start ()
   (ten:compile-template "src/templates.html")
+  (clack:clackup (server)))
+
+(defvar *server*)
+#+nil
+(setf *server* (start))
+#+nil
+(clack:stop *server*)
+`;
+    fs.writeFileSync(main_lisp, content);
+    spinner.succeed(chalk.green("main.lisp created successfully."));
+  } else if(backend == 'Clack/Djula') {
+    const content =
+`(defpackage #:${projectName}
+  (:use #:cl))
+(in-package #:${projectName})
+
+(defvar *app* (make-instance 'ningle:app))
+
+(setf (ningle:route *app* "/" :method :GET)
+  (lambda (args)
+    (declare (ignore args))
+    (djula:render-template* #p"templates/index.djhtml")))
+(setf (ningle:route *app* "/endpoint" :method :GET)
+  (lambda (args)
+    (declare (ignore args))
+    "We're so back!"))
+
+(defun server ()
+  (lack:builder
+    (:static :path "/public/"
+             :root #p"public/")
+    *app*))
+(defun start ()
   (clack:clackup (server)))
 
 (defvar *server*)
@@ -340,7 +385,8 @@ function copyTemplateFiles(projectName, backend) {
     'Axum': 'rust_axum',
     'Echo': 'echo',
     'Mongoose': 'mongoose',
-    'Clack': 'clack'
+    'Clack/Ten': 'clack-ten',
+    'Clack/Djula': 'clack-djula',
   };
 
   // Translate the backend name to the correct folder name
@@ -481,7 +527,7 @@ function provideInstructions(backend) {
 4. Open your browser and go to http://localhost:8000
 5. For more information on Mongoose, visit: https://mongoose.ws/`));
       break;
-      case 'Clack':
+      case 'Clack/Ten':
       console.log(chalk.blue(`1. Navigate to your project directory.
 2. Start up your repl/slime
 3. Load the asdf system, and switch to your package
@@ -490,6 +536,17 @@ function provideInstructions(backend) {
 6. For more information, just 'describe' the symbol you want, or for detailed information see:
    https://github.com/fukamachi/lack: For the web framework, Clack/Lack
    https://github.com/mmontone/ten: For the templating engine, Ten
+   https://github.com/fukamachi/ningle: For the router, Ningle`));
+      break;
+      case 'Clack/Djula':
+      console.log(chalk.blue(`1. Navigate to your project directory.
+2. Start up your repl/slime
+3. Load the asdf system, and switch to your package
+4. Call the 'start' function to start the server
+5. Load code onto the repl dynamically, and develop interactively!
+6. For more information, just 'describe' the symbol you want, or for detailed information see:
+   https://github.com/fukamachi/lack: For the web framework, Clack/Lack
+   https://mmontone.github.io/djula/djula/: For the templating engine, Djula
    https://github.com/fukamachi/ningle: For the router, Ningle`));
       break;
     default:
@@ -504,7 +561,7 @@ const languageToFrameworks = {
   PHP: ['Laravel'],
   Rust: ['Actix Web', 'Axum'],
   C: ['Mongoose'],
-  Lisp: ['Clack']
+  Lisp: ['Clack/Ten', 'Clack/Djula']
 };
 
 program
