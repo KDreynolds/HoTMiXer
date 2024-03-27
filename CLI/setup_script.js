@@ -261,11 +261,20 @@ function createLispSystem(projectName, dependencies, asdf_template_file_componen
 }
 
 function createMainLisp(projectName, backend) {
-  const spinner = ora('Creating "main.lisp"');
-  const main_lisp = path.join(process.cwd(), projectName, "src", "main.lisp");
-  if(backend == 'Clack/Ten') {
-    const content =
-`(defpackage #:${projectName}
+  const spinner = ora('Creating "main.lisp"').start();
+  const srcDir = path.join(process.cwd(), projectName, "src");
+  const mainLispPath = path.join(srcDir, "main.lisp");
+
+  // Ensure the src directory exists, especially for Clack/Djula
+  if (!fs.existsSync(srcDir)) {
+    fs.mkdirSync(srcDir, { recursive: true });
+    spinner.info(chalk.yellow(`Source directory ${srcDir} created successfully.`));
+  }
+
+  let content = "";
+
+  if (backend == 'Clack/Ten') {
+    content = `(defpackage #:${projectName}
   (:use #:cl))
 (in-package #:${projectName})
 
@@ -295,11 +304,16 @@ function createMainLisp(projectName, backend) {
 #+nil
 (clack:stop *server*)
 `;
-    fs.writeFileSync(main_lisp, content);
-    spinner.succeed(chalk.green("main.lisp created successfully."));
-  } else if(backend == 'Clack/Djula') {
-    const content =
-`(defpackage #:${projectName}
+  } else if (backend == 'Clack/Djula') {
+    // For Clack/Djula, ensure templates directory is copied or created as needed
+    const templatesDir = path.join(process.cwd(), projectName, "templates");
+    if (!fs.existsSync(templatesDir)) {
+      fs.mkdirSync(templatesDir, { recursive: true });
+      spinner.info(chalk.yellow(`Templates directory ${templatesDir} created successfully.`));
+      // Optionally, copy template files to this directory as needed
+    }
+
+    content = `(defpackage #:${projectName}
   (:use #:cl))
 (in-package #:${projectName})
 
@@ -328,11 +342,14 @@ function createMainLisp(projectName, backend) {
 #+nil
 (clack:stop *server*)
 `;
-    fs.writeFileSync(main_lisp, content);
-    spinner.succeed(chalk.green("main.lisp created successfully."));
   } else {
     spinner.fail(chalk.red("Unknown backend for Lisp"));
+    return;
   }
+
+  // Write the content to main.lisp
+  fs.writeFileSync(mainLispPath, content);
+  spinner.succeed(chalk.green("main.lisp created successfully."));
 }
 
 function createProjectDirectory(projectName) {
