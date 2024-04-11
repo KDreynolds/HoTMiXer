@@ -1,11 +1,11 @@
 # HoTMiXer
 
-HoTMiXer is a command-line tool designed to simplify the process of starting new web projects. It allows developers to quickly scaffold projects using the HTMX framework, coupled with a choice of popular backend technologies like Flask, Gin, Express and more.
+HoTMiXer is a command-line tool designed to simplify the process of starting new web projects. It allows developers to quickly scaffold projects using the HTMX framework, coupled with a choice of popular backend technologies like Flask, Gin, Express, and more, now including support for Lisp backends.
 
 # Features
 
 - Easy Scaffolding: Quickly set up a new HTMX project with a simple command.
-- Multiple Backends: Supports various backend technologies including Flask, Django, Gin, Node.js, and Laravel, with more to be added.
+- Multiple Backends: Supports various backend technologies including Flask, Django, Gin, Node.js, Laravel, and now Lisp (Clack/Ten and Clack/Djula), with more to be added.
 - HTMX Integration: Leverage the power of HTMX for dynamic, efficient web applications.
 
 # Getting Started
@@ -18,6 +18,7 @@ HoTMiXer is a command-line tool designed to simplify the process of starting new
 - PHP (Laravel)
 - Rust (Actix Web and Axum)
 - C/C++ (Mongoose)
+- Lisp (Clack/Ten and Clack/Djula)
 
 # Installation
 
@@ -37,6 +38,13 @@ Still in the very early stages of development.
 - Install Dependencies
     - Ensure you are in the project directory where `requirements.txt` is located.
     - Install the required Python packages by running `pip install -r requirements.txt`.
+
+## Setting Up a Lisp Environment
+
+- Ensure you have a Common Lisp implementation installed, such as SBCL or CCL.
+- For Clack-based projects, ensure Quicklisp is installed for easy dependency management.
+- Navigate to your project directory and start your Lisp REPL.
+- Load your project using ASDF or Quicklisp as required.
 
 # Creating a New Project
 
