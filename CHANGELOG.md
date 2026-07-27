@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.9 (2026-07-27) — Pre-Release Candidate
+## 1.0.0 (2026-07-27) — Stable Release
 
 ### CLI Experience
 - Added `--version` / `-V` flag

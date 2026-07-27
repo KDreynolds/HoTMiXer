@@ -1,4 +1,22 @@
-# Roadmap to 1.0.0
+# Roadmap
+
+## Completed (1.0.0)
+- [x] `hotmixer --version`/`-V` output
+- [x] `hotmixer list-backends` command
+- [x] Interactive prompts: detect installed tooling and skip unavailable backends
+- [x] `--skip-git` flag to opt out of `git init`
+- [x] Template variables: let `hotmixer create` accept `--port`, `--name`, etc.
+- [x] Input validation (reject reserved backend/project names before scaffolding)
+- [x] Post-scaffold instructions: add Django `collectstatic` and `migrate` prompts
+- [x] Add `engines` to Python templates (require Python >= 3.8)
+- [x] Offline-friendly templates (vendor htmx locally as fallback)
+- [x] Per-backend integration tests (scaffold → install → serve → verify)
+- [x] Code coverage for CLI logic
+- [x] Semver commitment: all 12 backends pass full test suite
+- [x] Documented API (all commands, flags, exit codes)
+- [x] Migration guide for users upgrading from older scaffolds
+- [x] Security audit (npm audit clean, no known vulnerabilities in deps)
+- [x] Published to npm
 
 ## Completed (0.4.0)
 - [x] Laravel skeleton upgraded from v10 (EOL) to v12
@@ -19,38 +37,7 @@
 - [x] CHANGELOG.md created
 - [x] README rewritten with real install instructions and known issues
 
-## 0.9.9 — Pre-Release Candidate
-
-### CLI Experience
-- [x] `hotmixer --version`/`-V` output
-- [x] `hotmixer list-backends` command
-- [x] Interactive prompts: detect installed tooling and skip unavailable backends
-- [x] `--skip-git` flag to opt out of `git init`
-- [x] Template variables: let `hotmixer create` accept `--port`, `--name`, etc.
-- [x] Colored, structured CLI output (replace raw spinner text)
-
-### Quality & Validation
-- [x] Input validation (reject reserved backend/project names before scaffolding)
-- [x] Post-scaffold instructions: add Django `collectstatic` and `migrate` prompts
-- [x] Add `engines` to Python templates (require Python >= 3.8)
-- [x] Offline-friendly templates (vendor htmx locally as fallback)
-
-### Testing & CI
-- [x] Per-backend integration tests (scaffold → install → serve → verify)
-- [x] CI pipeline (GitHub Actions) running full test suite on PR
-- [x] Code coverage for CLI logic
-
-### Release Readiness
-- [x] Semver commitment: all 12 backends pass full test suite
-- [x] Documented API (all commands, flags, exit codes)
-- [x] Migration guide for users upgrading from older scaffolds
-- [x] Security audit (npm audit clean, no known vulnerabilities in deps)
-- [ ] Publish to npm
-
-## 1.0.0 — Stable Release (Pending)
-- [ ] Publish to npm under semver contract
-
-### Deferred Past 1.0.0
+## Future
 - Hot-reloading design and implementation (watch files, restart dev server)
 - Dynamic Laravel scaffolding (generate skeleton at install time like Django)
 - Reduce npm package size (remove vendored mongoose.c, consider post-install scripts)
