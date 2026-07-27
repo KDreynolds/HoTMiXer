@@ -3,3 +3,12 @@
 /node/node_modules
 /flask/hotmix
 /.vscode
+/koa/node_modules
+/laravel/vendor
+/laravel/node_modules
+/gin/hotmix
+/echo/hotmixer
+/rust/target
+/rust_axum/target
+*.pyc
+__pycache__/

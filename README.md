@@ -1,78 +1,128 @@
 # HoTMiXer
 
-HoTMiXer is a command-line tool designed to simplify the process of starting new web projects. It allows developers to quickly scaffold projects using the HTMX framework, coupled with a choice of popular backend technologies like Flask, Gin, Express, and more, now including support for Lisp backends.
+HoTMiXer is a CLI tool that scaffolds new web projects with [HTMX](https://htmx.org) plus your choice of backend. Pick a language, pick a framework, and start coding immediately.
 
-# Features
+## Installation
 
-- Easy Scaffolding: Quickly set up a new HTMX project with a simple command.
-- Multiple Backends: Supports various backend technologies including Flask, Django, Gin, Node.js, Laravel, and now Lisp (Clack/Ten and Clack/Djula), with more to be added.
-- HTMX Integration: Leverage the power of HTMX for dynamic, efficient web applications.
+```bash
+npm install -g hotmixer
+```
 
-# Getting Started
+Requires Node.js 16+.
+
+## Usage
+
+```bash
+hotmixer create myproject
+```
+
+You'll be prompted to choose a language and framework. Or skip the prompts:
+
+```bash
+hotmixer create myproject --backend Flask
+```
 
 ## Supported Backends
 
-- Python (Flask and Django)
-- Go (Gin and Echo)
-- Node (Express and Koa)
-- PHP (Laravel)
-- Rust (Actix Web and Axum)
-- C/C++ (Mongoose)
-- Lisp (Clack/Ten and Clack/Djula)
+### Python
+- **Flask** — Jinja2 templates, Pip requirements
+- **Django** — Django template tags, `django-admin` bootstrap
 
-# Installation
+### Go
+- **Gin** — Go templates, `go.mod` ready
+- **Echo** — Static file serving, middleware included
 
-Still in the very early stages of development.
+### Node.js
+- **Express** — EJS templates, npm scripts
+- **Koa** — EJS templates, koa-router
 
-# Usage
+### PHP
+- **Laravel** — Blade templates, Composer, full skeleton
 
-## Setting Up a Python Environment
+### Rust
+- **Actix Web** — Handlebars templates, Cargo ready
+- **Axum** — Askama templates, Tokio runtime
 
-- Create a Virtual Environment (Optional but Recommended)
-    - Navigate to your project directory in the terminal.
-    - Run `python -m venv venv` to create a virtual environment named venv.
-    - Activate the virtual environment:
-        - On Windows: `.\venv\Scripts\activate`
-        - On macOS/Linux: `source venv/bin/activate`
+### C/C++
+- **Mongoose** — Single-header embedded web server, C source
 
-- Install Dependencies
-    - Ensure you are in the project directory where `requirements.txt` is located.
-    - Install the required Python packages by running `pip install -r requirements.txt`.
+### Common Lisp
+- **Clack/Ten** — Ten templates, Ningle router, Clack server
+- **Clack/Djula** — Djula templates, Ningle router, Clack server
 
-## Setting Up a Lisp Environment
+## Getting Started Per Backend
 
-- Ensure you have a Common Lisp implementation installed, such as SBCL or CCL.
-- For Clack-based projects, ensure Quicklisp is installed for easy dependency management.
-- Navigate to your project directory and start your Lisp REPL.
-- Load your project using ASDF or Quicklisp as required.
+### Python (Flask)
+```bash
+cd myproject
+python -m venv venv
+source venv/bin/activate      # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python app.py
+```
 
-# Creating a New Project
+### Python (Django)
+```bash
+cd myproject
+python -m venv venv
+source venv/bin/activate
+pip install django
+python manage.py migrate
+python manage.py runserver
+```
 
-To create a new HTMX project, run the following command:
+### Go (Gin / Echo)
+```bash
+cd myproject
+go mod tidy
+go run main.go
+```
 
-"hotmixer create myproject" and select the backend technology of choice.
+### Node.js (Express / Koa)
+```bash
+cd myproject
+npm install
+npm start
+```
 
-Replace `myproject` with your desired project name.
+### PHP (Laravel)
+```bash
+cd myproject
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan serve
+```
 
-# Contributing
+### Rust (Actix Web / Axum)
+```bash
+cd myproject
+cargo run
+```
 
-Please contact me, KDReynolds, on twitter at @imyerf if you would like to contribute.
+### C/C++ (Mongoose)
+```bash
+cd myproject
+gcc main.c mongoose.c -o server
+./server
+```
 
-# Areas needing work
+### Common Lisp (Clack/Ten, Clack/Djula)
+Start your REPL (SBCL, CCL, etc.), load the ASDF system, switch to
+the project package, and call `(start)`.
 
-Right now there are two main areas that need attention
+## Contributing
 
-1. We will always be looking to add more backend technologies, if the one you want is not currently supported, contact me or open an issue.
-2. Hot-reloading would be really nice but need to think through how this would work with all the different backends.
+Open an issue or PR on [GitHub](https://github.com/KDreynolds/HoTMiXer).
 
-Would also like to refactor how Laravel projects are built in the future, if done dynamically like we do with Django, would save a ton on the NPM packages actual size.
+## Areas Needing Work
 
-# License
+1. **More backends** — always looking to add frameworks. If yours isn't here, open an issue.
+2. **Hot-reloading** — would be nice, needs design work across disparate backends.
+3. **Dynamic Laravel scaffolding** — currently copies a full skeleton. Generating it at scaffold time (like Django) would shrink the npm package significantly.
+4. **Dependency pinning** — some backends (Koa, Lisp) lack lockfiles for reproducible installs.
+5. **Test suite** — no tests exist yet. A scaffold smoke-test suite would catch regressions early.
 
-HoTMiXer is open-sourced under the MIT License. This license permits you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, and to permit persons to whom the software is furnished to do so, subject to the following conditions:
+## License
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-# Acknowledgments
-
-Mr. Carson Gross for making me a Co-CEO of HTMX
+MIT. See [LICENSE](https://github.com/KDreynolds/HoTMiXer) for details.

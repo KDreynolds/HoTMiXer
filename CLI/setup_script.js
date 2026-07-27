@@ -161,7 +161,7 @@ function createIndexView(projectName) {
     const templatesDir = path.join(process.cwd(), projectName, 'templates');
     const indexPath = path.join(templatesDir, 'index.html');
     const viewsPath = path.join(process.cwd(), projectName, 'views.py');
-    const urlsPath = path.join(process.cwd(), projectName, 'urls.py');
+    const projectUrlsPath = path.join(process.cwd(), projectName, 'urls.py');
     const indexCode = `
 <!DOCTYPE html>
 {% load static %}
@@ -171,7 +171,7 @@ function createIndexView(projectName) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to HoTMiXer!</title>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.10" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
 </head>
 <body>
     <img src="{% static 'hotmix_logo.png' %}" alt="HotMiXer Logo">
@@ -181,7 +181,7 @@ function createIndexView(projectName) {
     <div id="update-div">
         It is so over...
 </div>
-<button hx-get="/endpoint" hx-trigger="click" hx-target="#update-div" hx-swap="outerHTML">
+<button hx-get="/endpoint" hx-trigger="click" hx-target="#update-div" hx-swap="innerHTML">
     Click Me!
 </button>
 <div class="link-container">
@@ -206,17 +206,22 @@ def endpoint(request):
 `;
     fs.writeFileSync(viewsPath, viewsCode);
 
-    // Create urls.py
-    const urlsCode = `
-from django.urls import path
-from .views import index, endpoint
+    // Read existing project urls.py and add our routes
+    let urlsContent = fs.readFileSync(projectUrlsPath, 'utf8');
 
-urlpatterns = [
-    path('', index, name='index'),
-    path('endpoint', endpoint, name='endpoint'),
-]
-`;
-    fs.writeFileSync(urlsPath, urlsCode);
+    // Add views import
+    urlsContent = urlsContent.replace(
+      'from django.urls import path',
+      'from django.urls import path\nfrom . import views'
+    );
+
+    // Add routes before the closing bracket
+    urlsContent = urlsContent.replace(
+      ']',
+      "    path('', views.index, name='index'),\n    path('endpoint', views.endpoint, name='endpoint'),\n]"
+    );
+
+    fs.writeFileSync(projectUrlsPath, urlsContent);
 
     spinner.succeed(chalk.green('Index view created successfully.'));
   } catch (error) {
