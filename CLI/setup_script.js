@@ -6,17 +6,17 @@
 //  EE               EEEE   EEE     NNN                                                                     NNNNN                                       
 //   EEEEEEEEEEEEEEEEEEEEEEEEE      NNN    NNN       NNN                 NNNNNNNNNNNNNN  NNNNN      NNNN     NNNM NNNN      NNNN                        
 //    EEEE            EEE  EEE      NNN    NNN       NNN                 NNNNNNNNNNNNNM  NNNNN     NNNNNN          NNNN    NNNN                         
-//    EE              EEE  EEE      NNN    NNN       NNN       NNNNNN         NNNN       NNNNNN    NNNNNN    NNN    NNNNN NNNN      NNNNNN      NNN MNNN
-//    EE              EEE  EEE      NNN    NNN       NNN     NNNNNNNNNN       NNNN       NNNNNN    NNMNNN    NNN      NNNNNNM     NNNNNNNNNN    NNNNNNNN
-//    EE  EEE         EEE  EEE      NNN    NNNNNNNNNNNNN    NNNN    NNNN      NNNN       NNN NNN  NNN NNN    NNN       NNNNN      NNN    NNNN   NNNN    
-//    EE   DEEE       EEE  EEE      NNN    NNNNNNNNNNNNN   MNNN      NNN      NNNN      NNNN NNNNNNN  NNN    NNN      NNNNNN     NNNN     NNN   NNNN    
-//    EE  EEEE        EEE  EEE      NNN    NNN       NNN   MNNN      NNN      NNNN      NNNN  NNNNNN  NNN    NNN     NNNN NNN    NNNNNNNNNNNN   NNNN    
-//    EE  EE  EEEEE   EEE  EEE      NNN    NNN       NNN    NNN     NNNN      NNNN      NNN    NNNN   NNNN   NNN    NNNN  NNNN   MNNN           NNNN    
-//    EE              EEE  EEE      NNN    NNN       NNN    NNNN   NNNNN      NNNN      NNN    NNNM   MNNN   NNN   NNNN    NNNN   NNNN    NN    NNNN    
-//    EE              EEE  EEE      NNN    NNN       NNN      NNNNNNNN        NNNN      NNN            NNN   NNN  NNNN      NNNN   NNNNNNNNN    NNNN    
-//    EEEEEEEEEEE     EEE EEEE                                                                                                                          
+//     EE              EEE  EEE      NNN    NNN       NNN       NNNNNN         NNNN       NNNNNN    NNNNNN    NNN    NNNNN NNNN      NNNNNN      NNN MNNN
+//     EE              EEE  EEE      NNN    NNN       NNN     NNNNNNNNNN       NNNN       NNNNNN    NNMNNN    NNN      NNNNNNM     NNNNNNNNNN    NNNNNNNN
+//     EE  EEE         EEE  EEE      NNN    NNNNNNNNNNNNN    NNNN    NNNN      NNNN       NNN NNN  NNN NNN    NNN       NNNNN      NNN    NNNN   NNNN    
+//     EE   DEEE       EEE  EEE      NNN    NNNNNNNNNNNNN   MNNN      NNN      NNNN      NNNN NNNNNNN  NNN    NNN      NNNNNN     NNNN     NNN   NNNN    
+//     EE  EEEE        EEE  EEE      NNN    NNN       NNN   MNNN      NNN      NNNN      NNNN  NNNNNN  NNN    NNN     NNNN NNN    NNNNNNNNNNNN   NNNN    
+//     EE  EE  EEEEE   EEE  EEE      NNN    NNN       NNN    NNN     NNNN      NNNN      NNN    NNNN   NNNN   NNN    NNNN  NNNN   MNNN           NNNN    
+//     EE              EEE  EEE      NNN    NNN       NNN    NNNN   NNNNN      NNNN      NNN    NNNM   MNNN   NNN   NNNN    NNNN   NNNN    NN    NNNN    
+//     EE              EEE  EEE      NNN    NNN       NNN      NNNNNNNN        NNNN      NNN            NNN   NNN  NNNN      NNNN   NNNNNNNNN    NNNN    
+//     EEEEEEEEEEE     EEE EEEE                                                                                                                          
 // EEEEEEEEEEEE   
-            
+      
 
 import fs from 'fs';
 import child_process from 'child_process';
@@ -33,6 +33,8 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+
 const frameworkToFolder = {
   'Flask': 'flask',
   'Django': 'django',
@@ -48,18 +50,83 @@ const frameworkToFolder = {
   'Clack/Djula': 'clack-djula',
 };
 
+const languageToFrameworks = {
+  Python: ['Flask', 'Django'],
+  Go: ['Gin', 'Echo'],
+  Node: ['Express', 'Koa'],
+  PHP: ['Laravel'],
+  Rust: ['Actix Web', 'Axum'],
+  C: ['Mongoose'],
+  Lisp: ['Clack/Ten', 'Clack/Djula']
+};
+
+const BACKEND_LIST = Object.keys(frameworkToFolder);
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function createNewProject(projectName, backend) {
+function checkCommand(cmd) {
+  try {
+    child_process.execSync(`which ${cmd}`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function detectAvailableBackends() {
+  const available = [];
+  for (const lang of Object.keys(languageToFrameworks)) {
+    let hasTool = false;
+    switch(lang) {
+      case 'Python': hasTool = checkCommand('python3') || checkCommand('python'); break;
+      case 'Go': hasTool = checkCommand('go'); break;
+      case 'Node': hasTool = true; break;
+      case 'PHP': hasTool = checkCommand('php') || checkCommand('composer'); break;
+      case 'Rust': hasTool = checkCommand('cargo') || checkCommand('rustc'); break;
+      case 'C': hasTool = checkCommand('gcc') || checkCommand('clang'); break;
+      case 'Lisp': hasTool = checkCommand('sbcl'); break;
+    }
+    if (hasTool) {
+      available.push(...languageToFrameworks[lang]);
+    }
+  }
+  return available;
+}
+
+function validateProjectName(name) {
+  const reserved = ['test', 'node_modules', 'src', 'lib', 'bin', 'dist', 'build',
+    'public', 'static', 'templates', '.git'];
+  const lower = name.toLowerCase();
+  if (reserved.includes(lower)) {
+    return `"${name}" is a reserved name and cannot be used as a project name.`;
+  }
+  if (/[^a-zA-Z0-9\-_]/.test(name)) {
+    return `Project name "${name}" contains invalid characters. Use only letters, numbers, hyphens, and underscores.`;
+  }
+  if (!/^[a-zA-Z]/.test(name)) {
+    return `Project name must start with a letter.`;
+  }
+  return null;
+}
+
+async function createNewProject(projectName, backend, skipGit, port) {
+  const err = validateProjectName(projectName);
+  if (err) {
+    console.log(chalk.red(`\n${err}\n`));
+    process.exit(1);
+  }
+
   switch(backend) {
     case 'Django':
       installDjango();
       startDjangoProject(projectName);
       await sleep(500);
       configureDjangoSettings(projectName);
+      await sleep(500);
+      createPythonVersionFile(projectName);
       await sleep(500);
       createTemplatesDirectory(projectName);
       await sleep(500);
@@ -74,9 +141,11 @@ async function createNewProject(projectName, backend) {
       await sleep(500);
       installComposerDependencies(projectName);
       await sleep(500);
-      initializeGitRepository();
+      if (!skipGit) {
+        initializeGitRepository();
+      }
       await sleep(500);
-      provideInstructions(backend);
+      provideInstructions(backend, port || 8000);
       await sleep(500);
       createProjectDirectory(projectName);
       await sleep(500);
@@ -109,9 +178,11 @@ async function createNewProject(projectName, backend) {
       break;
   }
   await sleep(500);
-  initializeGitRepository();
+  if (!skipGit) {
+    initializeGitRepository();
+  }
   await sleep(500);
-  provideInstructions(backend);
+  provideInstructions(backend, port);
 }
 
 function installDjango() {
@@ -144,7 +215,6 @@ function startDjangoProject(projectName) {
     }
     child_process.execSync(`django-admin startproject ${projectName}`, { stdio: 'inherit' });
     process.chdir(projectName);
-    console.log(`Current working directory: ${process.cwd()}`);
     spinner.succeed(chalk.green('Django project started successfully.'));
   } catch (error) {
     spinner.fail(chalk.red(`Error starting Django project: ${error}`));
@@ -169,7 +239,7 @@ function createIndexView(projectName) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to HoTMiXer!</title>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <script src="https://unpkg.com/htmx.org@2.0.10" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+    <script src="{% static 'htmx.min.js' %}"></script>
 </head>
 <body>
     <img src="{% static 'hotmix_logo.png' %}" alt="HotMiXer Logo">
@@ -249,6 +319,17 @@ function configureDjangoSettings(projectName) {
     spinner.succeed(chalk.green('Django settings configured successfully.'));
   } catch (error) {
     spinner.fail(chalk.red(`Error configuring Django settings: ${error}`));
+  }
+}
+
+function createPythonVersionFile(projectName) {
+  const spinner = ora('Setting Python version').start();
+  try {
+    const pyVerPath = path.join(process.cwd(), projectName, '.python-version');
+    fs.writeFileSync(pyVerPath, '3.8\n');
+    spinner.succeed(chalk.green('Python version set to 3.8+.'));
+  } catch (error) {
+    spinner.fail(chalk.red(`Error setting Python version: ${error}`));
   }
 }
 
@@ -509,129 +590,188 @@ function initializeGitRepository() {
   }
 }
 
-function provideInstructions(backend) {
+function provideInstructions(backend, port) {
   const spinner = ora('Providing instructions').start();
   spinner.succeed();
   console.log(chalk.green(`\nProject setup complete! Here's how to get started:\n`));
 
   switch (backend) {
     case 'Flask':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Create a Python virtual environment with 'python -m venv env'.
-3. Activate the virtual environment with 'source env/bin/activate' (on Unix or MacOS) or '.\\env\\Scripts\\activate' (on Windows).
-4. Run 'pip install -r requirements.txt' to install dependencies.
-5. Run 'flask run' to start the server.
-6. Visit the Flask documentation for more information: https://flask.palletsprojects.com/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Create a Python virtual environment with 'python -m venv env'.`));
+      console.log(chalk.blue(`3. Activate the virtual environment with 'source env/bin/activate' (on Unix or MacOS) or '.\\env\\Scripts\\activate' (on Windows).`));
+      console.log(chalk.blue(`4. Run 'pip install -r requirements.txt' to install dependencies.`));
+      console.log(chalk.blue(`5. Run 'flask run' to start the server.`));
+      console.log(chalk.blue(`6. Visit the Flask documentation for more information: https://flask.palletsprojects.com/`));
       break;
     case 'Gin':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'go run main.go' to start the server.
-3. Visit the Gin documentation for more information: https://gin-gonic.com/docs/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'go run main.go' to start the server.`));
+      console.log(chalk.blue(`3. Visit the Gin documentation for more information: https://gin-gonic.com/docs/`));
       break;
     case 'Echo':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'go run main.go' to start the server.
-3. Visit the Echo documentation for more information: https://echo.labstack.com/guide`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'go run main.go' to start the server.`));
+      console.log(chalk.blue(`3. Visit the Echo documentation for more information: https://echo.labstack.com/guide`));
       break;
     case 'Django':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'python manage.py migrate' to migrate settings.
-3. Run 'python manage.py collectstatic'.
-3. Run 'python manage.py runserver' to start the server.
-4. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'python manage.py migrate' to apply database migrations.`));
+      console.log(chalk.blue(`3. Run 'python manage.py collectstatic' to collect static files.`));
+      console.log(chalk.blue(`4. Run 'python manage.py runserver' to start the server.`));
+      console.log(chalk.blue(`5. Visit the Django documentation for more information: https://docs.djangoproject.com/`));
       break;
     case 'Express':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'npm install' to install dependencies.
-3. Run 'node app.js' to start the server.
-4. Visit the Express documentation for more information: https://expressjs.com/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'npm install' to install dependencies.`));
+      console.log(chalk.blue(`3. Run 'node app.js' to start the server.`));
+      console.log(chalk.blue(`4. Visit the Express documentation for more information: https://expressjs.com/`));
       break;
     case 'Koa':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'npm install' to install dependencies.
-3. Run 'node app.js' to start the server.
-4. Visit the Express documentation for more information: https://koajs.com/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'npm install' to install dependencies.`));
+      console.log(chalk.blue(`3. Run 'node app.js' to start the server.`));
+      console.log(chalk.blue(`4. Visit the Koa documentation for more information: https://koajs.com/`));
       break;
     case 'Laravel':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'composer install' to install dependencies.
-3. Run 'php artisan key:generate.
-3. Run 'php artisan serve' to start the server.
-4. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'composer install' to install dependencies.`));
+      console.log(chalk.blue(`3. Run 'php artisan key:generate'.`));
+      if (port && port !== 8000) {
+        console.log(chalk.blue(`4. Run 'php artisan serve --port=${port}' to start the server.`));
+      } else {
+        console.log(chalk.blue(`4. Run 'php artisan serve' to start the server.`));
+      }
+      console.log(chalk.blue(`5. Visit the Laravel documentation for more information: https://laravel.com/docs/`));
       break;
     case 'Actix Web':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'cargo build' to build the project.
-3. Run 'cargo run' to start the server.
-4. Visit the Rust documentation for more information: https://doc.rust-lang.org/book/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'cargo build' to build the project.`));
+      console.log(chalk.blue(`3. Run 'cargo run' to start the server.`));
+      console.log(chalk.blue(`4. Visit the Rust documentation for more information: https://doc.rust-lang.org/book/`));
       break;
     case 'Axum':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Run 'cargo build' to build the project.
-3. Run 'cargo run' to start the server.
-4. Visit the Axum documentation for more information: https://github.com/tokio-rs/axum`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Run 'cargo build' to build the project.`));
+      console.log(chalk.blue(`3. Run 'cargo run' to start the server.`));
+      console.log(chalk.blue(`4. Visit the Axum documentation for more information: https://github.com/tokio-rs/axum`));
       break;
       case 'Mongoose':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Compile the server code (you will need a c compiler like gcc or clang): clang main.c mongoose.c -o server.exe -DMG_ENABLE_HTTP=1
-3. Run the server: ./server
-4. Open your browser and go to http://localhost:8000
-5. For more information on Mongoose, visit: https://mongoose.ws/`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Compile the server code (you will need a c compiler like gcc or clang): clang main.c mongoose.c -o server.exe -DMG_ENABLE_HTTP=1`));
+      console.log(chalk.blue(`3. Run the server: ./server`));
+      console.log(chalk.blue(`4. Open your browser and go to http://localhost:8000`));
+      console.log(chalk.blue(`5. Visit the Mongoose documentation for more information: https://mongoose.ws/`));
       break;
       case 'Clack/Ten':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Start up your repl/slime
-3. Load the asdf system, and switch to your package
-4. Call the 'start' function to start the server
-5. Load code onto the repl dynamically, and develop interactively!
-6. For more information, just 'describe' the symbol you want, or for detailed information see:
-   https://github.com/fukamachi/lack: For the web framework, Clack/Lack
-   https://github.com/mmontone/ten: For the templating engine, Ten
-   https://github.com/fukamachi/ningle: For the router, Ningle`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Start up your repl/slime`));
+      console.log(chalk.blue(`3. Load the asdf system, and switch to your package`));
+      console.log(chalk.blue(`4. Call the 'start' function to start the server`));
+      console.log(chalk.blue(`5. Load code onto the repl dynamically, and develop interactively!`));
+      console.log(chalk.blue(`6. For more information, just 'describe' the symbol you want, or for detailed information see:`));
+      console.log(chalk.blue(`   https://github.com/fukamachi/lack: For the web framework, Clack/Lack`));
+      console.log(chalk.blue(`   https://github.com/mmontone/ten: For the templating engine, Ten`));
+      console.log(chalk.blue(`   https://github.com/fukamachi/ningle: For the router, Ningle`));
       break;
       case 'Clack/Djula':
-      console.log(chalk.blue(`1. Navigate to your project directory.
-2. Start up your repl/slime
-3. Load the asdf system, and switch to your package
-4. Call the 'start' function to start the server
-5. Load code onto the repl dynamically, and develop interactively!
-6. For more information, just 'describe' the symbol you want, or for detailed information see:
-   https://github.com/fukamachi/lack: For the web framework, Clack/Lack
-   https://mmontone.github.io/djula/djula/: For the templating engine, Djula
-   https://github.com/fukamachi/ningle: For the router, Ningle`));
+      console.log(chalk.blue(`1. Navigate to your project directory.`));
+      console.log(chalk.blue(`2. Start up your repl/slime`));
+      console.log(chalk.blue(`3. Load the asdf system, and switch to your package`));
+      console.log(chalk.blue(`4. Call the 'start' function to start the server`));
+      console.log(chalk.blue(`5. Load code onto the repl dynamically, and develop interactively!`));
+      console.log(chalk.blue(`6. For more information, just 'describe' the symbol you want, or for detailed information see:`));
+      console.log(chalk.blue(`   https://github.com/fukamachi/lack: For the web framework, Clack/Lack`));
+      console.log(chalk.blue(`   https://mmontone.github.io/djula/djula/: For the templating engine, Djula`));
+      console.log(chalk.blue(`   https://github.com/fukamachi/ningle: For the router, Ningle`));
       break;
     default:
       console.log(chalk.red(`Please refer to the documentation for your chosen backend technology.`));
   }
 }
 
-const languageToFrameworks = {
-  Python: ['Flask', 'Django'],
-  Go: ['Gin', 'Echo'],
-  Node: ['Express', 'Koa'],
-  PHP: ['Laravel'],
-  Rust: ['Actix Web', 'Axum'],
-  C: ['Mongoose'],
-  Lisp: ['Clack/Ten', 'Clack/Djula']
-};
+program
+  .name('hotmixer')
+  .description('Scaffold HTMX-powered web projects in 12 backend frameworks')
+  .version(pkg.version, '-V, --version', 'output the current version');
+
+program
+  .command('list-backends')
+  .description('List all available backend frameworks')
+  .action(() => {
+    console.log(chalk.cyan('\nAvailable backends:\n'));
+    const available = detectAvailableBackends();
+    for (const lang of Object.keys(languageToFrameworks)) {
+      const frameworks = languageToFrameworks[lang];
+      const statusFrameworks = frameworks.map(f => {
+        const installed = available.includes(f);
+        const icon = installed ? chalk.green('✓') : chalk.yellow('✗');
+        const label = installed ? chalk.white(f) : chalk.dim(f);
+        return `  ${icon} ${label}`;
+      }).join('\n');
+      console.log(chalk.bold(lang));
+      console.log(statusFrameworks + '\n');
+    }
+  });
 
 program
   .command('create <projectName>')
+  .description('Create a new HoTMiXer project')
   .option('-b, --backend <backend>', 'Backend framework')
+  .option('--skip-git', 'Skip git repository initialization')
+  .option('-p, --port <port>', 'Port for the development server')
   .action((projectName, options) => {
+    const err = validateProjectName(projectName);
+    if (err) {
+      console.log(chalk.red(`\n${err}\n`));
+      process.exit(1);
+    }
+
+    const port = options.port ? parseInt(options.port, 10) : undefined;
+    const skipGit = options.skipGit || false;
+
     if (options.backend) {
-      createNewProject(projectName, options.backend);
+      if (!BACKEND_LIST.includes(options.backend)) {
+        console.log(chalk.red(`\nUnknown backend: "${options.backend}"`));
+        console.log(chalk.yellow(`Use 'hotmixer list-backends' to see available backends.\n`));
+        process.exit(1);
+      }
+      createNewProject(projectName, options.backend, skipGit, port);
     } else {
+      const available = detectAvailableBackends();
+      if (available.length === 0) {
+        console.log(chalk.red('\nNo supported backend tooling detected on your system.\n'));
+        console.log(chalk.yellow('Install a supported language toolchain and try again.\n'));
+        process.exit(1);
+      }
+
+      const unseenLanguages = Object.keys(languageToFrameworks).filter(lang =>
+        languageToFrameworks[lang].some(f => available.includes(f))
+      );
+
+      const unavailableLanguages = Object.keys(languageToFrameworks).filter(lang =>
+        !languageToFrameworks[lang].some(f => available.includes(f))
+      );
+
+      if (unavailableLanguages.length > 0) {
+        console.log(chalk.dim(`Note: ${unavailableLanguages.join(', ')} tooling not detected; hidden from choices.\n`));
+      }
+
       inquirer.prompt([
         {
           type: 'list',
           name: 'language',
           message: 'Which programming language would you like to use for your backend?',
-          choices: Object.keys(languageToFrameworks),
+          choices: unseenLanguages,
         }
       ]).then(answers => {
         const language = answers.language;
-        const frameworks = languageToFrameworks[language];
+        const frameworks = languageToFrameworks[language].filter(f => available.includes(f));
+
+        if (frameworks.length === 0) {
+          console.log(chalk.red(`\nNo frameworks available for ${language}.\n`));
+          process.exit(1);
+        }
 
         if (frameworks.length > 1) {
           inquirer.prompt([
@@ -642,10 +782,10 @@ program
               choices: frameworks,
             }
           ]).then(answers => {
-            createNewProject(projectName, answers.backend);
+            createNewProject(projectName, answers.backend, skipGit, port);
           });
         } else {
-          createNewProject(projectName, frameworks[0]);
+          createNewProject(projectName, frameworks[0], skipGit, port);
         }
       });
     } 

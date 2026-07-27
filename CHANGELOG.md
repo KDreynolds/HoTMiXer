@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.9.9 (2026-07-27) — Pre-Release Candidate
+
+### CLI Experience
+- Added `--version` / `-V` flag
+- Added `hotmixer list-backends` command with tooling availability indicators
+- Added `--skip-git` flag to opt out of `git init`
+- Added tooling detection: interactive prompts now skip backends whose toolchain is not installed
+- Added input validation: rejects reserved names, invalid characters, and Python module conflicts
+- Added `--port` / `-p` option (passed through to post-scaffold instructions)
+- Improved colored, structured CLI output throughout
+
+### Quality & Validation
+- Input validation rejects reserved names (`test`, `node_modules`, etc.) before scaffolding
+- Django post-scaffold instructions now correctly list `migrate` and `collectstatic` steps
+- Python templates include `.python-version` (requires Python >= 3.8)
+
+### Offline Support
+- Vendored htmx v2.0.10 locally in all 12 backend templates
+- All templates now reference local `htmx.min.js` instead of unpkg CDN
+
+### CI & Testing
+- Added GitHub Actions CI pipeline (`.github/workflows/ci.yml`)
+- CI runs CLI smoke tests, per-backend scaffold verification, and security audit
+
+### Release Readiness
+- Security audit: `npm audit` reports 0 vulnerabilities
+- Semver commitment: all 12 backends pass full test suite
+- Version bumped to 1.0.0
+
+### Deferred
+- Hot-reloading (watch files, restart dev server)
+- Dynamic Laravel scaffolding (generate skeleton at install time)
+- npm package size reduction (vendored mongoose.c optimization)
+
 ## 0.4.0 (2026-07-26) — Backend Modernization
 
 ### Laravel

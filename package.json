@@ -1,7 +1,6 @@
 {
   "name": "hotmixer",
-  "version": "0.4.0",
-
+  "version": "0.9.9",
   "description": "",
   "main": "CLI/setup_script.js",
   "type": "module",
@@ -10,7 +9,8 @@
   },
   "scripts": {
     "version": "echo 'Current version:' && echo $npm_package_version",
-    "test": "bash test/run.sh"
+    "test": "bash test/run.sh",
+    "coverage": "c8 --reporter=text --reporter=lcov node CLI/setup_script.js --version && c8 --reporter=text --reporter=lcov bash -c 'cd /tmp && node $OLDPWD/CLI/setup_script.js list-backends && rm -rf /tmp/cov-test && node $OLDPWD/CLI/setup_script.js create cov-test --backend Express --skip-git && rm -rf /tmp/cov-test'"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +24,8 @@
     "fs-extra": "^10.0.0",
     "inquirer": "^12.0.0",
     "ora": "^7.0.1"
+  },
+  "devDependencies": {
+    "c8": "^12.0.0"
   }
 }

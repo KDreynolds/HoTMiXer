@@ -22,6 +22,30 @@ You'll be prompted to choose a language and framework. Or skip the prompts:
 hotmixer create myproject --backend Flask
 ```
 
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `hotmixer create <name>` | Scaffold a new project |
+| `hotmixer list-backends` | List available backends with tooling status |
+| `hotmixer --version` / `-V` | Print version |
+
+### Create Options
+
+| Option | Description |
+|--------|-------------|
+| `-b, --backend <name>` | Skip interactive prompts, use named backend |
+| `-p, --port <port>` | Dev server port (shown in instructions) |
+| `--skip-git` | Skip `git init` |
+| `--help` | Show help |
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success |
+| 1 | Error (invalid name, unknown backend, no tooling detected) |
+
 ## Supported Backends
 
 ### Python
@@ -68,6 +92,7 @@ python -m venv venv
 source venv/bin/activate
 pip install django
 python manage.py migrate
+python manage.py collectstatic
 python manage.py runserver
 ```
 
@@ -111,16 +136,24 @@ gcc main.c mongoose.c -o server
 Start your REPL (SBCL, CCL, etc.), load the ASDF system, switch to
 the project package, and call `(start)`.
 
-## Contributing
+## Migration from Pre-0.9.9 Scaffolds
 
-Open an issue or PR on [GitHub](https://github.com/KDreynolds/HoTMiXer).
+If you scaffolded a project with an older version of HoTMiXer:
+
+- **htmx CDN → local**: Templates now bundle `htmx.min.js` locally. If you update your scaffold, replace the unpkg `<script>` tag with the local path for your backend.
+- **New CLI flags**: `--skip-git`, `--version`, `list-backends`, and `--port` are now available.
+- **Input validation**: Project names are now validated before scaffolding. Reserved names like `test` and `node_modules` are rejected.
+- **Django instructions**: `collectstatic` and `migrate` steps are now documented in post-scaffold instructions.
 
 ## Areas Needing Work
 
-1. **More backends** — always looking to add frameworks. If yours isn't here, open an issue.
-2. **Hot-reloading** — would be nice, needs design work across disparate backends.
-3. **Dynamic Laravel scaffolding** — currently copies a full skeleton. Generating it at scaffold time (like Django) would shrink the npm package significantly.
-4. **Test suite** — no tests exist yet. A scaffold smoke-test suite would catch regressions early.
+1. **Hot-reloading** — design and implementation across disparate backends.
+2. **Dynamic Laravel scaffolding** — generating the skeleton at install time (like Django) would shrink the npm package significantly.
+3. **More backends** — always looking to add frameworks. If yours isn't here, open an issue.
+
+## Contributing
+
+Open an issue or PR on [GitHub](https://github.com/KDreynolds/HoTMiXer).
 
 ## License
 

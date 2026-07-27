@@ -12,3 +12,5 @@
 /rust_axum/target
 *.pyc
 __pycache__/
+/coverage
+.nyc_output
