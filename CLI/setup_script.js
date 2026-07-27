@@ -106,8 +106,6 @@ async function createNewProject(projectName, backend) {
       copyTemplateFiles(projectName, backend);
       await sleep(500);
       installDependencies(projectName, backend);
-      await sleep(500);
-      createMainLisp(projectName, backend) ;
       break;
   }
   await sleep(500);
@@ -420,6 +418,7 @@ function copyTemplateFiles(projectName, backend) {
     'Django': 'django',
     'Gin': 'gin',
     'Express': 'node',
+    'Koa': 'koa',
     'Laravel': 'laravel',
     'Actix Web': 'rust',
     'Axum': 'rust_axum',
