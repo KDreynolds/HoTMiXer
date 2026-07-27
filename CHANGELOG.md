@@ -43,3 +43,12 @@ First release after ~2 years. Focused on fixing everything that broke during the
 - Expanded `.gitignore` to cover build artifacts across Go, Rust, PHP, and Node backends
 - Rewrote README with real install instructions, full backend list, and per-backend quickstart
 - Added CHANGELOG.md
+- Added ROADMAP.md with plan to 1.0.0
+
+### Test Suite
+- Added `test/run.sh` — full smoke test covering all 12 backends
+- Wired into `npm test` (replaces previous no-op)
+- Tests scaffold → install → serve → verify for each backend
+- Detects missing tooling and skips gracefully
+- Lisp backends verified via ASDF load (server start requires interactive REPL)
+- Laravel tested via Docker (PHP + Composer containers)

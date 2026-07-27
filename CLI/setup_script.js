@@ -296,7 +296,8 @@ function createMainLisp(projectName, backend) {
 
   if (backend == 'Clack/Ten') {
     content = `(defpackage #:${projectName}
-  (:use #:cl))
+  (:use #:cl)
+  (:export #:start))
 (in-package #:${projectName})
 
 (defvar *app* (make-instance 'ningle:app))
@@ -335,7 +336,8 @@ function createMainLisp(projectName, backend) {
     }
 
     content = `(defpackage #:${projectName}
-  (:use #:cl))
+  (:use #:cl)
+  (:export #:start))
 (in-package #:${projectName})
 
 (defvar *app* (make-instance 'ningle:app))
