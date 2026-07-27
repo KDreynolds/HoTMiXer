@@ -20,9 +20,7 @@
 - Vendored htmx v2.0.10 locally in all 12 backend templates
 - All templates now reference local `htmx.min.js` instead of unpkg CDN
 
-### CI & Testing
-- Added GitHub Actions CI pipeline (`.github/workflows/ci.yml`)
-- CI runs CLI smoke tests, per-backend scaffold verification, and security audit
+### Testing
 
 ### Release Readiness
 - Security audit: `npm audit` reports 0 vulnerabilities
