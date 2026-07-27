@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.4.0 (2026-07-26) — Backend Modernization
+
+### Laravel
+- Upgraded skeleton from Laravel 10 (EOL) to **Laravel 12**
+- Changed session driver from `database` to `file` to avoid SQLite dependency
+- Added automatic `database.sqlite` creation during scaffolding
+- Updated composer.lock for PHP 8.5 compatibility
+- Updated Blade template instruction text for v12 paths
+
+### CLI Dependencies
+- `commander` updated from v8 → v13 (changed to named export: `import { program }`)
+- `inquirer` updated from v8 → v12 (API-compatible, ESM-native, 0 vulnerabilities)
+- Added `engines` field: `"node": ">=16"`
+
+### Clack/Lisp
+- `lack` added as explicit dependency in generated ASD for both Clack/Ten and Clack/Djula
+- Removed `:ten-template` ASDF component to eliminate preload requirement
+- Clack/Ten template function resolved at runtime via `find-symbol` to avoid compile-file errors
+- Both Lisp backends now load cleanly via ASDF
+
+### Housekeeping
+- Removed README "Known Issues" section (Laravel EOL resolved)
+- ROADMAP.md updated to mark 0.4.0 items complete
+
 ## 0.3.0 (2026-07-26) — Wake-Up Release
 
 First release after ~2 years. Focused on fixing everything that broke during the hiatus.

@@ -111,10 +111,6 @@ gcc main.c mongoose.c -o server
 Start your REPL (SBCL, CCL, etc.), load the ASDF system, switch to
 the project package, and call `(start)`.
 
-## Known Issues
-
-- **Laravel targets v10.x (EOL February 2025).** The scaffolded skeleton uses Laravel 10, which no longer receives security fixes. A future release will upgrade the skeleton to Laravel 12. In the meantime, you can upgrade the generated project manually by following the [Laravel upgrade guide](https://laravel.com/docs/11.x/upgrade).
-
 ## Contributing
 
 Open an issue or PR on [GitHub](https://github.com/KDreynolds/HoTMiXer).

@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/htmx.org@2.0.10" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
 </head>
 <body>
-    <img src="{{ asset('images/hotmix_logo.png') }}" alt="HotMiX Logo">
+    <img src="{{ asset('images/hotmix_logo.png') }}" alt="HotMiXer Logo">
     <h1>Welcome to HoTMiXer!</h1>
     <p>Edit resources/views/index.blade.php to start building your application.</p>
     <div id="update-div">
@@ -19,7 +19,7 @@
     </button>
     <div class="link-container">
         <a href="https://htmx.org/docs/" target="_blank">Learn more about HTMX</a>
-        <a href="https://laravel.com/docs/10.x" target="_blank">Learn more about Laravel</a>
+        <a href="https://laravel.com/docs" target="_blank">Learn more about Laravel</a>
     </div>
 </body>
 </html>

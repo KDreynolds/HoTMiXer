@@ -20,7 +20,7 @@
 
 import fs from 'fs';
 import child_process from 'child_process';
-import program from 'commander';
+import { program } from 'commander';
 import path from 'path';
 import fsExtra from 'fs-extra';
 import inquirer from 'inquirer';
@@ -87,7 +87,7 @@ async function createNewProject(projectName, backend) {
       await sleep(500);
       copyTemplateFiles(projectName, backend);
       await sleep(500);
-      createLispSystem(projectName, ["clack", "ningle", "ten"], `(:ten-template "templates" :file-extension "html")`);
+      createLispSystem(projectName, ["clack", "ningle", "ten", "lack"], ``);
       await sleep(500);
       createMainLisp(projectName, backend) ;
       break;
@@ -96,7 +96,7 @@ async function createNewProject(projectName, backend) {
       await sleep(500);
       copyTemplateFiles(projectName, backend);
       await sleep(500);
-      createLispSystem(projectName, ["clack", "ningle", "djula"], ``);
+      createLispSystem(projectName, ["clack", "ningle", "djula", "lack"], ``);
       await sleep(500);
       createMainLisp(projectName, backend) ;
       break;
@@ -300,12 +300,16 @@ function createMainLisp(projectName, backend) {
   (:export #:start))
 (in-package #:${projectName})
 
+(defun render-index ()
+  (ten:compile-template "src/templates.html")
+  (funcall (find-symbol "INDEX" (find-package "TEN-TEMPLATES"))))
+
 (defvar *app* (make-instance 'ningle:app))
 
 (setf (ningle:route *app* "/" :method :GET)
   (lambda (args)
     (declare (ignore args))
-    (ten-templates:index)))
+    (render-index)))
 (setf (ningle:route *app* "/endpoint" :method :GET)
   (lambda (args)
     (declare (ignore args))
@@ -317,7 +321,6 @@ function createMainLisp(projectName, backend) {
              :root #p"public/")
     *app*))
 (defun start ()
-  (ten:compile-template "src/templates.html")
   (clack:clackup (server)))
 
 (defvar *server*)
@@ -457,6 +460,13 @@ function copyLaravelProject(projectName) {
   const envPath = path.join(projectName, '.env');
   fsExtra.copySync(envExamplePath, envPath);
   spinner.succeed(chalk.green('.env file created successfully.'));
+
+  // Create SQLite database for session storage
+  const dbPath = path.join(projectName, 'database', 'database.sqlite');
+  if (!fs.existsSync(dbPath)) {
+    fs.writeFileSync(dbPath, '');
+    spinner.succeed(chalk.green('SQLite database created.'));
+  }
 }
 
 function installComposerDependencies(projectName) {
