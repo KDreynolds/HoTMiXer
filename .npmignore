@@ -1,4 +1,5 @@
 .github/
+docs/
 TEST_CHECKLIST.md
 /hotmix
 /node_modules

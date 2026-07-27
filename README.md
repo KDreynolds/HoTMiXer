@@ -145,11 +145,10 @@ If you scaffolded a project with an older version of HoTMiXer:
 - **Input validation**: Project names are now validated before scaffolding. Reserved names like `test` and `node_modules` are rejected.
 - **Django instructions**: `collectstatic` and `migrate` steps are now documented in post-scaffold instructions.
 
-## Areas Needing Work
+## Have a Feature Idea?
 
-1. **Hot-reloading** — design and implementation across disparate backends.
-2. **Dynamic Laravel scaffolding** — generating the skeleton at install time (like Django) would shrink the npm package significantly.
-3. **More backends** — always looking to add frameworks. If yours isn't here, open an issue.
+Open an issue or PR on [GitHub](https://github.com/KDreynolds/HoTMiXer) — new backends,
+hot-reloading designs, and other improvements are welcome.
 
 ## Contributing
 
