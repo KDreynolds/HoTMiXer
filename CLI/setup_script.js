@@ -731,12 +731,13 @@ program
     const skipGit = options.skipGit || false;
 
     if (options.backend) {
-      if (!BACKEND_LIST.includes(options.backend)) {
-        console.log(chalk.red(`\nUnknown backend: "${options.backend}"`));
+      const backend = options.backend.trim();
+      if (!BACKEND_LIST.includes(backend)) {
+        console.log(chalk.red(`\nUnknown backend: "${backend}"`));
         console.log(chalk.yellow(`Use 'hotmixer list-backends' to see available backends.\n`));
         process.exit(1);
       }
-      createNewProject(projectName, options.backend, skipGit, port);
+      createNewProject(projectName, backend, skipGit, port);
     } else {
       const available = detectAvailableBackends();
       if (available.length === 0) {
