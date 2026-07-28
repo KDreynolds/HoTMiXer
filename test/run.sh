@@ -77,7 +77,7 @@ run_test() {
     rm -rf "$proj" 2>/dev/null || true
 }
 
-echo ""; echo -e "${CYAN}═══ HoTMiXer Test Suite v1.0.0 ═══${NC}"; echo ""
+echo ""; echo -e "${CYAN}═══ HoTMiXer Test Suite v1.0.1 ═══${NC}"; echo ""
 
 # ============================================
 run_test "Flask" "Flask" "flask" \

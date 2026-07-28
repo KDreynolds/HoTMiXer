@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1 (2026-07-27)
+- Added npm keywords and package description
+
 ## 1.0.0 (2026-07-27) — Stable Release
 
 ### CLI Experience
