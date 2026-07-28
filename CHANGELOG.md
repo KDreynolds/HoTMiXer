@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.2 (2026-07-28)
+- Fix backend name trimming (accepts `"  Express  "` with surrounding spaces)
+
 ## 1.0.1 (2026-07-27)
 - Added npm keywords and package description
 

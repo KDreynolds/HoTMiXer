@@ -1,6 +1,6 @@
 {
   "name": "hotmixer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scaffold HTMX-powered web projects in 12 backend frameworks",
   "main": "CLI/setup_script.js",
   "type": "module",
